@@ -1,0 +1,26 @@
+# One-click deploy to Render (https://render.com) to give the backend a public URL.
+# After deploy, set the secret env vars in the Render dashboard (never commit them),
+# then point the artifact at the service URL via window.NEXION_API_BASE.
+services:
+  - type: web
+    name: nexion-platform
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: node dist/index.js
+    healthCheckPath: /health
+    envVars:
+      - key: PORT
+        value: "8080"
+      - key: GITHUB_TOKEN
+        sync: false
+      - key: GITHUB_API_URL
+        value: https://api.github.com
+      - key: DATADOG_API_KEY
+        sync: false
+      - key: DATADOG_APP_KEY
+        sync: false
+      - key: DATADOG_SITE
+        value: datadoghq.com
+      - key: DATABASE_URL
+        sync: false

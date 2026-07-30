@@ -1,0 +1,1635 @@
+<!DOCTYPE html>
+<script type="application/json" id="cowork-artifact-meta">
+{
+  "name": "Nexion V12 Os",
+  "schemaVersion": 1,
+  "description": "NEXION — V12 Enterprise Intelligence OS: interactive app with NEXION/ORION/AEGIS domains, Public/Private mode gating, production readiness assessment console, decision pipeline simulator, and permissions & standards explorer. Fully self-contained; all data defined in the page.",
+  "mcpTools": [],
+  "mcpServerNames": []
+}
+</script>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEXION — V12 Enterprise Intelligence OS</title>
+<style>
+  :root {
+    color-scheme: dark;
+    --page: #07070b;
+    --surface: rgba(255,255,255,0.028);
+    --surface-2: rgba(255,255,255,0.05);
+    --surface-3: rgba(255,255,255,0.08);
+    --ink: #f5f4f9;
+    --ink-2: #bdbccb;
+    --muted: #83828f;
+    --grid: rgba(255,255,255,0.09);
+    --border: rgba(255,255,255,0.09);
+    --border-2: rgba(255,255,255,0.15);
+    --nexion: #5b9bf5;      /* blue — engineering */
+    --nexion-dim: #2b5fb0;
+    --orion: #9d8cf2;       /* violet — strategy */
+    --orion-dim: #5647b8;
+    --aegis: #24c48d;       /* aqua — governance */
+    --aegis-dim: #0f6f4e;
+    --good: #34c759;
+    --warning: #ffb020;
+    --serious: #ff8a5b;
+    --critical: #ff5a5a;
+    --grad: linear-gradient(120deg,#a78bfa 0%,#6aa5f7 55%,#57c7ee 100%);
+    --grad-2: linear-gradient(135deg,#9d8cf2 0%,#5b9bf5 100%);
+    --radius: 16px;
+    --radius-lg: 24px;
+    --font: system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--font);
+    background: var(--page);
+    color: var(--ink);
+    min-height: 100vh;
+    line-height: 1.6;
+    position: relative;
+    -webkit-font-smoothing: antialiased;
+  }
+  body::before {
+    content: ""; position: fixed; inset: 0; z-index: -2; pointer-events: none;
+    background:
+      radial-gradient(58% 46% at 50% -10%, rgba(139,124,246,0.24), transparent 72%),
+      radial-gradient(42% 40% at 88% 6%, rgba(87,199,238,0.13), transparent 70%),
+      radial-gradient(40% 42% at 8% 22%, rgba(90,155,245,0.13), transparent 72%),
+      var(--page);
+  }
+  body::after {
+    content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+    background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
+    background-size: 26px 26px;
+    -webkit-mask-image: linear-gradient(to bottom, black, transparent 62%);
+    mask-image: linear-gradient(to bottom, black, transparent 62%);
+  }
+  /* ---------- header ---------- */
+  header {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(9,9,14,0.72);
+    backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+    border-bottom: 1px solid var(--border);
+  }
+  .hbar {
+    max-width: 1200px; margin: 0 auto; padding: 14px 24px;
+    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+  }
+  .logo { display: flex; align-items: center; gap: 11px; }
+  .logo-mark {
+    width: 36px; height: 36px; border-radius: 11px;
+    background: var(--grad-2);
+    display: grid; place-items: center;
+    font-weight: 800; font-size: 18px; color: #fff;
+    box-shadow: 0 8px 24px rgba(120,110,240,0.45);
+  }
+  .logo-name { font-size: 19px; font-weight: 800; letter-spacing: 0.16em; }
+  .logo-sub { font-size: 10.5px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
+  .hspacer { flex: 1; }
+  /* mode toggle */
+  .mode-wrap { display: flex; align-items: center; gap: 10px; }
+  .mode-toggle {
+    display: flex; background: var(--surface-2); border: 1px solid var(--border);
+    border-radius: 999px; padding: 3px; cursor: pointer; user-select: none;
+  }
+  .mode-toggle button {
+    border: 0; background: transparent; color: var(--muted);
+    font: 600 12.5px var(--font); padding: 7px 17px; border-radius: 999px;
+    cursor: pointer; transition: all .18s ease; letter-spacing: 0.03em;
+  }
+  .mode-toggle button.active-public { background: var(--grad-2); color: #fff; box-shadow: 0 4px 14px rgba(110,120,240,.4); }
+  .mode-toggle button.active-private { background: linear-gradient(135deg,#ff6b6b,#d03b6b); color: #fff; box-shadow: 0 4px 14px rgba(230,80,90,.35); }
+  select.role {
+    background: var(--surface-2); color: var(--ink-2); border: 1px solid var(--border);
+    border-radius: 999px; padding: 8px 14px; font: 500 12.5px var(--font); cursor: pointer;
+  }
+  .mode-badge {
+    font-size: 10.5px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 5px 12px; border-radius: 999px;
+  }
+  .mode-badge.pub { background: rgba(91,155,245,0.13); color: var(--nexion); border: 1px solid rgba(91,155,245,0.35); }
+  .mode-badge.priv { background: rgba(255,90,90,0.13); color: #ff8080; border: 1px solid rgba(255,90,90,0.4); }
+  /* nav */
+  nav { border-top: 1px solid var(--border); overflow-x: auto; }
+  .nbar { max-width: 1200px; margin: 0 auto; padding: 9px 24px; display: flex; gap: 6px; }
+  nav button {
+    border: 1px solid transparent; background: transparent; color: var(--muted);
+    font: 600 13px var(--font); padding: 8px 15px; cursor: pointer;
+    border-radius: 999px; white-space: nowrap; transition: all .16s;
+  }
+  nav button:hover { color: var(--ink); background: var(--surface); }
+  nav button.on { color: var(--ink); background: var(--surface-2); border-color: var(--border-2); box-shadow: 0 2px 12px rgba(0,0,0,.25); }
+  nav button .lock { font-size: 10px; opacity: .8; }
+  /* ---------- layout ---------- */
+  main { max-width: 1200px; margin: 0 auto; padding: 30px 24px 90px; }
+  .view { display: none; animation: fadein .3s ease; }
+  .view.on { display: block; }
+  @keyframes fadein { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  h1 { font-size: 32px; font-weight: 800; letter-spacing: -0.02em; line-height: 1.1; }
+  h2 { font-size: 22px; font-weight: 700; margin-bottom: 16px; letter-spacing: -0.01em; }
+  h3 { font-size: 15px; font-weight: 700; }
+  .sub { color: var(--ink-2); font-size: 15px; max-width: 760px; }
+  .eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+  section { margin-top: 46px; }
+  /* hero */
+  .hero { text-align: center; padding: 40px 0 6px; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 9px;
+    font-size: 12px; font-weight: 600; letter-spacing: .03em; color: var(--ink-2);
+    background: var(--surface); border: 1px solid var(--border-2);
+    padding: 7px 15px; border-radius: 999px; backdrop-filter: blur(6px);
+  }
+  .hero-badge .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--aegis); box-shadow: 0 0 12px var(--aegis); }
+  .hero h1 { font-size: clamp(36px, 6.4vw, 62px); letter-spacing: -0.03em; margin: 24px auto 0; max-width: 15ch; }
+  .grad-text { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .hero .sub { margin: 20px auto 0; text-align: center; }
+  .hero-cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-top: 28px; }
+  .section-head { text-align: center; max-width: 720px; margin: 0 auto 28px; }
+  .section-head h2 { margin-bottom: 0; }
+  .kicker {
+    display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--ink-2);
+    background: var(--surface); border: 1px solid var(--border-2);
+    padding: 5px 13px; border-radius: 999px; margin-bottom: 14px;
+  }
+  .card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 22px;
+    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  }
+  .grid { display: grid; gap: 16px; }
+  .g2 { grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+  .g3 { grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); }
+  .g4 { grid-template-columns: repeat(auto-fit, minmax(215px, 1fr)); }
+  .chip {
+    display: inline-block; font-size: 12px; color: var(--ink-2);
+    background: var(--surface-2); border: 1px solid var(--border);
+    border-radius: 999px; padding: 5px 12px; margin: 3px 4px 3px 0;
+  }
+  .tag { font-size: 10.5px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; padding: 4px 10px; border-radius: 999px; }
+  .tag.nx { background: rgba(91,155,245,.15); color: var(--nexion); }
+  .tag.or { background: rgba(157,140,242,.16); color: var(--orion); }
+  .tag.ae { background: rgba(36,196,141,.16); color: #2cd69a; }
+  /* intelligence cards */
+  .intel-card { position: relative; overflow: hidden; cursor: pointer; transition: transform .2s ease, border-color .2s, box-shadow .2s; }
+  .intel-card:hover { transform: translateY(-4px); border-color: var(--border-2); box-shadow: 0 18px 40px rgba(0,0,0,.35); }
+  .intel-card::before {
+    content: ""; position: absolute; inset: 0 0 auto 0; height: 3px;
+  }
+  .intel-card::after {
+    content: ""; position: absolute; inset: -1px -1px auto -1px; height: 120px;
+    background: radial-gradient(60% 100% at 50% 0%, rgba(255,255,255,0.05), transparent 70%);
+    pointer-events: none;
+  }
+  .intel-card.nx::before { background: var(--nexion); box-shadow: 0 0 22px var(--nexion); }
+  .intel-card.or::before { background: var(--orion); box-shadow: 0 0 22px var(--orion); }
+  .intel-card.ae::before { background: var(--aegis); box-shadow: 0 0 22px var(--aegis); }
+  .intel-title { font-size: 23px; font-weight: 800; letter-spacing: .12em; margin: 10px 0 2px; }
+  .intel-role { font-size: 12.5px; color: var(--ink-2); margin-bottom: 10px; }
+  .intel-q { font-size: 14px; font-style: italic; color: var(--muted); border-left: 2px solid var(--grid); padding-left: 11px; margin-top: 13px; }
+  /* stat tiles */
+  .stat { padding: 20px 22px; }
+  .stat .label { font-size: 12px; color: var(--muted); font-weight: 600; letter-spacing: .04em; }
+  .stat .value { font-size: 36px; font-weight: 800; margin: 3px 0 10px; letter-spacing: -0.02em; }
+  .meter { height: 7px; background: var(--grid); border-radius: 999px; overflow: hidden; }
+  .meter > span { display: block; height: 100%; border-radius: 999px; transition: width .8s cubic-bezier(.2,.8,.2,1); }
+  .stat .note { font-size: 12px; color: var(--ink-2); margin-top: 9px; }
+  /* lock overlay for private content in public mode */
+  .gated { position: relative; }
+  .gated.locked > .gate-body { filter: blur(6px); pointer-events: none; user-select: none; }
+  .gate-cover {
+    display: none; position: absolute; inset: 0; z-index: 5;
+    border-radius: var(--radius);
+    background: rgba(9,9,14,0.55); backdrop-filter: blur(2px);
+    place-items: center; text-align: center; padding: 24px;
+  }
+  .gated.locked .gate-cover { display: grid; }
+  .gate-cover .gc-in { max-width: 380px; }
+  .gate-cover .glyph { font-size: 26px; }
+  .gate-cover b { display: block; margin: 6px 0 4px; font-size: 15px; }
+  .gate-cover p { font-size: 12.5px; color: var(--ink-2); }
+  .gate-cover button {
+    margin-top: 12px; border: 1px solid var(--border-2); background: var(--surface-2);
+    color: var(--ink); font: 600 12.5px var(--font); padding: 9px 18px; border-radius: 999px; cursor: pointer;
+  }
+  .gate-cover button:hover { background: var(--surface-3); }
+  /* domain accordion */
+  .dom { border: 1px solid var(--border); border-radius: 14px; overflow: hidden; margin-bottom: 10px; background: var(--surface); }
+  .dom-head { display: flex; align-items: center; gap: 10px; padding: 14px 16px; cursor: pointer; user-select: none; }
+  .dom-head:hover { background: var(--surface-2); }
+  .dom-head .arrow { margin-left: auto; color: var(--muted); transition: transform .2s; font-size: 12px; }
+  .dom.open .arrow { transform: rotate(90deg); }
+  .dom-body { display: none; padding: 6px 16px 15px; border-top: 1px solid var(--grid); }
+  .dom.open .dom-body { display: block; }
+  /* assessment console */
+  textarea, input[type=text] {
+    width: 100%; background: var(--surface-2); border: 1px solid var(--border);
+    color: var(--ink); border-radius: 12px; padding: 12px 14px; font: 400 13.5px var(--font);
+    resize: vertical;
+  }
+  textarea:focus, input:focus { outline: 2px solid rgba(157,140,242,.5); outline-offset: 1px; }
+  .check-group { margin-bottom: 18px; }
+  .check-group h4 { font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+  .check {
+    display: flex; gap: 10px; align-items: flex-start; padding: 9px 11px;
+    border-radius: 10px; cursor: pointer; transition: background .12s;
+  }
+  .check:hover { background: var(--surface-2); }
+  .check input { margin-top: 3px; accent-color: var(--orion); width: 15px; height: 15px; cursor: pointer; }
+  .check .ct { font-size: 13.5px; }
+  .check .cd { font-size: 12px; color: var(--muted); }
+  .btn {
+    border: 0; border-radius: 999px; padding: 12px 24px; cursor: pointer;
+    font: 700 14px var(--font); transition: filter .15s, transform .1s, box-shadow .15s;
+  }
+  .btn:hover { filter: brightness(1.08); transform: translateY(-1px); }
+  .btn:active { transform: scale(.98); }
+  .btn.primary { background: var(--grad-2); color: #fff; box-shadow: 0 10px 28px rgba(110,120,240,.4); }
+  .btn.ghost { background: var(--surface); color: var(--ink); border: 1px solid var(--border-2); }
+  /* verdict */
+  .verdict { text-align: center; padding: 30px 20px; }
+  .verdict .score { font-size: 58px; font-weight: 800; line-height: 1; letter-spacing: -0.02em; }
+  .verdict .of { font-size: 16px; color: var(--muted); font-weight: 600; }
+  .verdict-badge {
+    display: inline-flex; align-items: center; gap: 8px; margin-top: 12px;
+    font-weight: 700; font-size: 14px; padding: 9px 20px; border-radius: 999px;
+  }
+  .vb-good { background: rgba(52,199,89,.15); color: #43d264; border: 1px solid rgba(52,199,89,.4); }
+  .vb-warn { background: rgba(255,176,32,.13); color: var(--warning); border: 1px solid rgba(255,176,32,.35); }
+  .vb-serious { background: rgba(255,138,91,.13); color: var(--serious); border: 1px solid rgba(255,138,91,.35); }
+  .vb-crit { background: rgba(255,90,90,.14); color: #ff8080; border: 1px solid rgba(255,90,90,.4); }
+  .cat-row { display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--grid); }
+  .cat-row:last-child { border-bottom: 0; }
+  .cat-row .cn { width: 150px; font-size: 13px; color: var(--ink-2); flex-shrink: 0; }
+  .cat-row .meter { flex: 1; }
+  .cat-row .cv { width: 46px; text-align: right; font-size: 13px; font-variant-numeric: tabular-nums; }
+  .gap-item { display: flex; gap: 10px; padding: 10px 13px; border-radius: 10px; background: var(--surface-2); margin-bottom: 8px; font-size: 13px; }
+  .gap-item .sev { font-weight: 700; flex-shrink: 0; }
+  /* pipeline */
+  .pipe { max-width: 560px; margin: 0 auto; }
+  .pstage {
+    position: relative; border: 1px solid var(--border); background: var(--surface);
+    border-radius: 14px; padding: 16px 18px; cursor: pointer; transition: border-color .2s, box-shadow .3s, transform .2s;
+  }
+  .pstage:hover { border-color: var(--border-2); transform: translateY(-1px); }
+  .pstage .pt { font-weight: 700; font-size: 14.5px; display: flex; align-items: center; gap: 9px; }
+  .pstage .pd { font-size: 12.5px; color: var(--muted); margin-top: 3px; }
+  .pstage .pdetail { display: none; font-size: 13px; color: var(--ink-2); margin-top: 10px; border-top: 1px solid var(--grid); padding-top: 10px; }
+  .pstage.open .pdetail { display: block; }
+  .pstage.lit { border-color: var(--orion); box-shadow: 0 0 26px rgba(157,140,242,.35); }
+  .pstage.done-lit { border-color: var(--good); box-shadow: 0 0 18px rgba(52,199,89,.22); }
+  .pconn { width: 2px; height: 26px; background: var(--grid); margin: 0 auto; position: relative; }
+  .pconn::after { content: "▼"; position: absolute; bottom: -7px; left: 50%; transform: translateX(-50%); font-size: 9px; color: var(--muted); }
+  .pnum { width: 25px; height: 25px; border-radius: 50%; background: var(--surface-3); display: inline-grid; place-items: center; font-size: 11.5px; font-weight: 700; color: var(--ink-2); flex-shrink: 0; }
+  /* tables */
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { padding: 11px 12px; text-align: left; border-bottom: 1px solid var(--grid); }
+  th { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  td:first-child { color: var(--ink-2); }
+  .yes { color: #43d264; font-weight: 700; }
+  .no { color: var(--muted); }
+  .partial { color: var(--warning); font-weight: 600; }
+  tr.hl { background: rgba(91,155,245,.08); }
+  tr.hl td:first-child { color: var(--ink); }
+  .std {
+    display: flex; gap: 12px; align-items: flex-start; padding: 13px 15px;
+    border: 1px solid var(--border); border-radius: 13px; background: var(--surface);
+    cursor: pointer; transition: border-color .15s;
+  }
+  .std:hover { border-color: var(--border-2); }
+  .std input { margin-top: 3px; accent-color: var(--good); width: 15px; height: 15px; cursor: pointer; }
+  .std .st { font-size: 13.5px; font-weight: 600; }
+  .std .sd { font-size: 12px; color: var(--muted); }
+  /* operating framework */
+  .fw-layout { grid-template-columns: 320px 1fr; }
+  .fw-sticky { position: sticky; top: 130px; }
+  @media (max-width: 860px) { .fw-layout { grid-template-columns: 1fr; } .fw-sticky { position: static; } }
+  .pillar {
+    display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px;
+    border: 1px solid var(--border); border-radius: 13px; background: var(--surface);
+    cursor: pointer; margin-bottom: 10px; transition: border-color .15s;
+  }
+  .pillar:hover { border-color: var(--border-2); }
+  .pillar input { margin-top: 3px; accent-color: var(--good); width: 16px; height: 16px; cursor: pointer; flex-shrink: 0; }
+  .pillar.done { border-color: rgba(52,199,89,.5); }
+  .pillar .pt2 { font-size: 14px; font-weight: 700; }
+  .pillar .pd2 { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+  .pillar .jump { font-size: 12px; color: var(--nexion); text-decoration: none; font-weight: 600; }
+  .lc-state {
+    border: 1px solid var(--border); background: var(--surface); color: var(--ink-2);
+    border-radius: 999px; padding: 9px 17px; font: 600 13px var(--font); cursor: pointer; transition: all .15s;
+  }
+  .lc-state:hover { border-color: var(--border-2); }
+  .lc-state.on { background: var(--grad-2); border-color: transparent; color: #fff; box-shadow: 0 6px 18px rgba(110,120,240,.4); }
+  .wf-step { display: flex; gap: 9px; font-size: 12.5px; color: var(--ink-2); padding: 6px 0; border-bottom: 1px solid var(--grid); }
+  .wf-step:last-child { border-bottom: 0; }
+  .wf-step .n { color: var(--muted); font-weight: 700; flex-shrink: 0; }
+  .contract-io { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+  .contract-io .io { background: var(--surface-2); border-radius: 10px; padding: 11px 13px; }
+  .contract-io .io h5 { font-size: 10.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 5px; }
+  .contract-io .io li { font-size: 12px; color: var(--ink-2); margin-left: 14px; }
+  .sla-line { font-size: 12px; color: var(--muted); margin-top: 11px; border-top: 1px solid var(--grid); padding-top: 9px; }
+  footer { border-top: 1px solid var(--border); margin-top: 70px; }
+  .fbar { max-width: 1200px; margin: 0 auto; padding: 24px; font-size: 12px; color: var(--muted); display: flex; gap: 16px; flex-wrap: wrap; }
+  .divider-quote { text-align: center; padding: 44px 20px; }
+  .divider-quote .dq { font-size: 23px; font-weight: 700; letter-spacing: .01em; }
+  .divider-quote .dq span { opacity: .95; }
+  .report-box { white-space: pre-wrap; font-size: 13px; color: var(--ink-2); background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-top: 14px; display: none; }
+  @media (max-width: 640px) {
+    .hero h1 { font-size: 34px; }
+    h1 { font-size: 26px; }
+    .cat-row .cn { width: 110px; }
+  }
+
+  /* ---------- hero background video (Overview only) ---------- */
+  #view-overview { position: relative; }
+  #view-overview > section, #view-overview > .divider-quote { position: relative; z-index: 1; }
+  .hero-bg {
+    position: absolute; top: -30px; left: 50%; transform: translateX(-50%);
+    width: 100vw; height: 640px; z-index: 0; overflow: hidden; pointer-events: none;
+  }
+  .hero-bg .hb-img {
+    position: absolute; inset: -8%;
+    background-image: url("data:image/jpeg;base64,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");
+    background-size: cover; background-position: center;
+    will-change: transform;
+    animation: hbKen 30s ease-in-out infinite alternate;
+  }
+  .hero-bg .hb-fx {
+    position: absolute; inset: 0; mix-blend-mode: screen; opacity: .5;
+    background:
+      radial-gradient(38% 55% at 22% 32%, rgba(120,110,240,.30), transparent 62%),
+      radial-gradient(40% 55% at 78% 42%, rgba(70,180,240,.26), transparent 62%),
+      radial-gradient(30% 40% at 55% 70%, rgba(160,120,250,.20), transparent 65%);
+    animation: hbGlow 9s ease-in-out infinite alternate;
+  }
+  .hero-bg .hb-sweep {
+    position: absolute; inset: 0;
+    background: linear-gradient(74deg, transparent 42%, rgba(255,255,255,.07) 50%, transparent 58%);
+    background-size: 220% 100%;
+    animation: hbSweep 11s linear infinite;
+  }
+  @keyframes hbKen {
+    from { transform: scale(1) translate(0, 0); }
+    to   { transform: scale(1.12) translate(-2%, -1.4%); }
+  }
+  @keyframes hbGlow {
+    0%   { opacity: .34; transform: translateX(0); }
+    100% { opacity: .62; transform: translateX(2.5%); }
+  }
+  @keyframes hbSweep {
+    0%   { background-position: 130% 0; }
+    100% { background-position: -30% 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-bg .hb-img, .hero-bg .hb-fx, .hero-bg .hb-sweep { animation: none; }
+  }
+  .hero-bg video {
+    width: 100%; height: 100%; object-fit: cover; opacity: 0.78;
+    filter: saturate(1.05) contrast(1.02);
+  }
+  .hero-bg::after {
+    content: ""; position: absolute; inset: 0;
+    background:
+      radial-gradient(75% 85% at 50% 0%, rgba(7,7,11,0.08), rgba(7,7,11,0.30) 72%),
+      linear-gradient(to bottom, rgba(7,7,11,0.06) 0%, rgba(7,7,11,0.16) 58%, rgba(7,7,11,0.30) 80%, var(--page) 100%);
+  }
+  .hero { position: relative; z-index: 1; }
+  @media (max-width: 640px) { .hero-bg { height: 560px; } }
+
+</style>
+</head>
+<body>
+
+<header>
+  <div class="hbar">
+    <div class="logo">
+      <div class="logo-mark">N</div>
+      <div>
+        <div class="logo-name">NEXION</div>
+        <div class="logo-sub">V12 Enterprise Intelligence OS</div>
+      </div>
+    </div>
+    <div class="hspacer"></div>
+    <div class="mode-wrap">
+      <span id="modeBadge" class="mode-badge pub">Public Mode</span>
+      <div class="mode-toggle" role="tablist" aria-label="Access mode">
+        <button id="btnPublic" class="active-public" onclick="setMode('public')">Public</button>
+        <button id="btnPrivate" onclick="setMode('private')">Private</button>
+      </div>
+      <select id="roleSel" class="role" onchange="setRole(this.value)" aria-label="Access role">
+        <option value="public">Public User</option>
+        <option value="enterprise">Enterprise Customer</option>
+      </select>
+    </div>
+  </div>
+  <nav><div class="nbar" id="navBar"></div></nav>
+</header>
+
+<main id="mainRoot">
+
+<!-- ============ OVERVIEW ============ -->
+<div class="view on" id="view-overview">
+  <div class="hero-bg" aria-hidden="true"><div class="hb-img"></div><div class="hb-fx"></div><div class="hb-sweep"></div></div>
+
+  <div class="hero">
+    <span class="hero-badge"><span class="dot"></span> V12 Enterprise Intelligence OS</span>
+    <h1>Three intelligences.<br><span class="grad-text">One operating framework.</span></h1>
+    <p class="sub">
+      NEXION, ORION, and AEGIS are not three chatbots — they are three enterprise intelligence
+      domains with defined scopes, permissions, and outputs. Strategy imagines, engineering builds,
+      governance safeguards, and accountable humans decide.
+    </p>
+    <div class="hero-cta">
+      <button class="btn primary" onclick="go('assess')">Open Readiness Console</button>
+      <button class="btn ghost" onclick="go('pipeline')">See the Decision Pipeline</button>
+    </div>
+  </div>
+
+  <section>
+    <div class="grid g3">
+      <div class="card intel-card nx" onclick="go('nexion')">
+        <span class="tag nx">Engineering</span>
+        <div class="intel-title">NEXION</div>
+        <div class="intel-role">Chief Engineering &amp; Technical Intelligence Platform</div>
+        <p style="font-size:13px;color:var(--ink-2)">Designs, validates, optimizes, and monitors every technical component. Owns architecture, infrastructure, security engineering, reliability, and DevOps.</p>
+        <div class="intel-q">"Can we build this — and will it survive production?"</div>
+      </div>
+      <div class="card intel-card or" onclick="go('orion')">
+        <span class="tag or">Strategy</span>
+        <div class="intel-title">ORION</div>
+        <div class="intel-role">Chief Strategic Intelligence &amp; Future Development Platform</div>
+        <p style="font-size:13px;color:var(--ink-2)">Guides long-term direction: markets, innovation, expansion, competitive positioning, and executive decision support.</p>
+        <div class="intel-q">"Should we build this — and where does it take us?"</div>
+      </div>
+      <div class="card intel-card ae" onclick="go('aegis')">
+        <span class="tag ae">Governance</span>
+        <div class="intel-title">AEGIS</div>
+        <div class="intel-role">Chief Governance, Integrity &amp; Assurance Platform</div>
+        <p style="font-size:13px;color:var(--ink-2)">Independent oversight. Verifies initiatives are compliant, explainable, auditable, and appropriately governed — and disagrees when necessary.</p>
+        <div class="intel-q">"Does this comply — and can we defend it later?"</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider-quote">
+    <div class="dq"><span style="color:var(--orion)">One imagines.</span> <span style="color:var(--nexion)">One engineers.</span> <span style="color:#2cd69a">One safeguards.</span></div>
+  </div>
+
+  <section>
+    <div class="section-head">
+      <span class="kicker">Readiness</span>
+      <h2>Operating-model readiness</h2>
+    </div>
+    <div class="grid g4" id="readinessTiles"></div>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <span class="kicker">Live Signals</span>
+      <h2>Live production signals</h2>
+    </div>
+    <div class="card" style="margin-bottom:16px;display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+      <input id="liveRepo" type="text" placeholder="GitHub owner/repo (e.g. vercel/next.js)" style="flex:1;min-width:220px">
+      <input id="liveSvc" type="text" placeholder="Datadog service (e.g. web)" style="flex:1;min-width:180px">
+      <button class="btn primary" onclick="loadLiveSignals()">Refresh</button>
+    </div>
+    <div class="grid g2" id="liveSignals"></div>
+    <p id="liveSource" style="font-size:12px;color:var(--muted);margin-top:10px"></p>
+  </section>
+
+  <section>
+    <div class="section-head">
+      <span class="kicker">Orchestration</span>
+      <h2>How they work together</h2>
+    </div>
+    <div class="card">
+      <p style="font-size:14px;color:var(--ink-2)">Ask the ecosystem: <b style="color:var(--ink)">"Build me an AI factory."</b></p>
+      <div class="grid g3" style="margin-top:14px">
+        <div>
+          <span class="tag or">ORION answers</span>
+          <ul style="margin:10px 0 0 18px;font-size:13px;color:var(--ink-2)">
+            <li>Should we build it?</li><li>What industries need it?</li><li>How do we monetize it?</li>
+            <li>Who competes with us?</li><li>What if demand shifts?</li>
+          </ul>
+        </div>
+        <div>
+          <span class="tag nx">NEXION answers</span>
+          <ul style="margin:10px 0 0 18px;font-size:13px;color:var(--ink-2)">
+            <li>Architecture &amp; infrastructure</li><li>APIs, security, scaling</li>
+            <li>Deployment &amp; testing</li><li>Monitoring &amp; cost</li><li>Production readiness</li>
+          </ul>
+        </div>
+        <div>
+          <span class="tag ae">AEGIS answers</span>
+          <ul style="margin:10px 0 0 18px;font-size:13px;color:var(--ink-2)">
+            <li>Does this comply with policy?</li><li>Who approves this change?</li>
+            <li>What legal obligations apply?</li><li>Is customer data protected?</li><li>Can it be audited later?</li>
+          </ul>
+        </div>
+      </div>
+      <p style="margin-top:16px;font-size:13px;color:var(--muted);border-top:1px solid var(--grid);padding-top:12px">
+        None of these opinions automatically become decisions. They feed a structured decision process
+        where executives review the evidence and make the final call — see the <a href="#" onclick="go('pipeline');return false" style="color:var(--nexion)">Decision Pipeline</a>.
+      </p>
+    </div>
+  </section>
+</div>
+
+<!-- ============ INTELLIGENCE DOMAIN VIEWS (rendered by JS) ============ -->
+<div class="view" id="view-nexion"></div>
+<div class="view" id="view-orion"></div>
+<div class="view" id="view-aegis"></div>
+
+<!-- ============ ASSESSMENT CONSOLE ============ -->
+<div class="view" id="view-assess">
+  <div class="eyebrow">NEXION · Engineering Intelligence</div>
+  <h1>Production Readiness Console</h1>
+  <p class="sub" style="margin-top:10px">
+    Describe a system, check off what it already has, and NEXION runs its primary questions —
+    <i>Is this scalable? Is this secure? Will this break? Is this production ready?</i> —
+    and returns a scored, evidence-based readiness report.
+  </p>
+
+  <section class="grid" style="grid-template-columns: 1fr; gap: 18px">
+    <div class="card">
+      <h3 style="margin-bottom:10px">1 · Describe the system</h3>
+      <input type="text" id="sysName" placeholder="System name (e.g., AI Factory — Inference Platform)" style="margin-bottom:10px">
+      <textarea id="sysDesc" rows="3" placeholder="Optional: what does it do, who uses it, expected scale…"></textarea>
+    </div>
+    <div class="card">
+      <h3 style="margin-bottom:4px">2 · What does it already have?</h3>
+      <p style="font-size:12.5px;color:var(--muted);margin-bottom:14px">Check everything that is genuinely in place today. Unchecked items become the gap list.</p>
+      <div class="grid g2" id="checklist"></div>
+      <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">
+        <button class="btn primary" onclick="runAssessment()">Run NEXION Assessment</button>
+        <button class="btn ghost" onclick="resetAssessment()">Reset</button>
+      </div>
+    </div>
+    <div class="card" id="resultCard" style="display:none">
+      <h3>3 · NEXION verdict</h3>
+      <div class="verdict">
+        <span class="score" id="scoreNum">–</span><span class="of"> / 10</span>
+        <div><span class="verdict-badge" id="verdictBadge"></span></div>
+        <p id="verdictLine" style="margin-top:12px;font-size:13.5px;color:var(--ink-2);max-width:560px;margin-left:auto;margin-right:auto"></p>
+      </div>
+      <div id="catBars" style="margin-top:6px"></div>
+      <h3 style="margin-top:24px;margin-bottom:10px">Primary questions</h3>
+      <div id="pqAnswers"></div>
+      <h3 style="margin-top:24px;margin-bottom:10px">Gap list — what's missing</h3>
+      <div id="gapList"></div>
+      <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap">
+        <button class="btn ghost" onclick="toggleReport()">View full report</button>
+        <button class="btn ghost" onclick="copyReport(this)">Copy report</button>
+      </div>
+      <div class="report-box" id="reportBox"></div>
+    </div>
+  </section>
+</div>
+
+<!-- ============ DECISION PIPELINE ============ -->
+<div class="view" id="view-pipeline">
+  <div class="eyebrow">V12 Governance</div>
+  <h1>Decision Pipeline</h1>
+  <p class="sub" style="margin-top:10px">
+    Every initiative flows through strategy, engineering, and governance before an accountable
+    executive decision. Click a stage for details, or run the simulation to watch an opportunity
+    travel the pipeline.
+  </p>
+  <section style="text-align:center;margin-top:24px">
+    <button class="btn primary" id="simBtn" onclick="runSim()">▶ Run pipeline simulation</button>
+  </section>
+  <section class="pipe" id="pipeRoot" style="margin-top:26px"></section>
+</div>
+
+<!-- ============ OPERATING FRAMEWORK ============ -->
+<div class="view" id="view-framework">
+  <div class="eyebrow">V12 Formalization Program</div>
+  <h1>Operating Framework — the path to 10/10</h1>
+  <p class="sub" style="margin-top:10px">
+    The model scores 8.5/10 as an enterprise operating framework. Reaching 10 means formalizing
+    seven disciplines: governance artifacts, decision workflows, service contracts between domains,
+    lifecycle management, KPIs, AI evaluation procedures, and operational playbooks. Mark each pillar
+    formalized as your organization completes it — the score tracks live.
+  </p>
+
+  <section class="grid fw-layout" style="gap: 18px; align-items: start">
+    <div class="card stat fw-sticky">
+      <div class="label">Operating-model score</div>
+      <div class="value"><span id="fwScore">8.5</span><span style="font-size:16px;color:var(--muted)"> / 10</span></div>
+      <div class="meter"><span id="fwMeter" style="width:85%;background:var(--warning)"></span></div>
+      <div class="note" id="fwNote">0 of 7 pillars formalized. Each formalized pillar moves the score toward 10.</div>
+    </div>
+    <div id="pillarList"></div>
+  </section>
+
+  <section>
+    <h2>1 · Governance artifact registry</h2>
+    <p class="sub" style="margin-bottom:14px">Every recommendation becomes a typed, versioned, retained artifact — so future teams understand <i>why</i>, not just <i>who</i>. Click a row to view its template.</p>
+    <div class="card" style="overflow-x:auto;padding:8px 20px"><table id="artifactTable"></table></div>
+    <div class="report-box" id="artifactTpl" style="margin-top:12px"></div>
+  </section>
+
+  <section>
+    <h2>2 · Decision workflows</h2>
+    <div class="grid g3" id="workflowCards"></div>
+  </section>
+
+  <section>
+    <h2>3 · Service contracts between domains</h2>
+    <p class="sub" style="margin-bottom:14px">Domains exchange work through explicit contracts — defined inputs, outputs, SLAs, and quality gates — never informal handoffs.</p>
+    <div class="grid g2" id="contractCards"></div>
+  </section>
+
+  <section>
+    <h2>4 · Initiative lifecycle</h2>
+    <p class="sub" style="margin-bottom:14px">Every initiative holds exactly one lifecycle state. Click a state for its entry and exit criteria.</p>
+    <div id="lifecycleStrip" style="display:flex;flex-wrap:wrap;gap:8px"></div>
+    <div class="card" id="lifecycleDetail" style="margin-top:12px;display:none"></div>
+  </section>
+
+  <section>
+    <h2>5 · Domain KPIs</h2>
+    <div class="card" style="overflow-x:auto;padding:8px 20px"><table id="kpiTable"></table></div>
+  </section>
+
+  <section class="gated" data-gate="staff">
+    <div class="gate-body">
+      <h2>6 · AI evaluation procedures <span class="tag ae" style="vertical-align:middle">AI Governance</span></h2>
+      <p class="sub" style="margin-bottom:14px">Each intelligence domain is itself an AI system under governance — evaluated on a schedule, monitored continuously, and always subordinate to human oversight.</p>
+      <div class="card" style="overflow-x:auto;padding:8px 20px"><table id="aiEvalTable"></table></div>
+    </div>
+    <div class="gate-cover"><div class="gc-in">
+      <div class="glyph">🔒</div><b>Internal staff only</b>
+      <p>AI evaluation procedures are internal governance material.</p>
+      <button onclick="setMode('private')">Switch to Private Mode</button>
+    </div></div>
+  </section>
+
+  <section>
+    <h2>7 · Operational playbooks</h2>
+    <p class="sub" style="margin-bottom:14px">Pre-agreed responses so nobody improvises under pressure. Expand a playbook to see its steps.</p>
+    <div id="playbookList"></div>
+  </section>
+</div>
+
+<!-- ============ ACCESS & STANDARDS ============ -->
+<div class="view" id="view-access">
+  <div class="eyebrow">V12 Permission Structure</div>
+  <h1>Access &amp; Standards</h1>
+  <p class="sub" style="margin-top:10px">
+    No intelligence domain has unrestricted access. Authorization is policy-driven — RBAC, least
+    privilege, just-in-time elevation, and immutable audit logs. The matrix below reflects your
+    current mode and role; the highlighted column is you.
+  </p>
+
+  <section>
+    <h2>Permission matrix</h2>
+    <div class="card" style="overflow-x:auto; padding: 8px 20px">
+      <table id="permTable"></table>
+    </div>
+    <p style="font-size:12px;color:var(--muted);margin-top:10px">
+      ✔ full access · ◐ limited / role-scoped · — no access. Executive access is scoped to governance needs, not raw production credentials. Every elevated action is logged.
+    </p>
+  </section>
+
+  <section class="gated" data-gate="staff">
+    <div class="gate-body">
+      <h2>Internal access principles <span class="tag ae" style="vertical-align:middle">Internal</span></h2>
+      <div class="grid g2" id="principles"></div>
+    </div>
+    <div class="gate-cover"><div class="gc-in">
+      <div class="glyph">🔒</div><b>Internal staff only</b>
+      <p>Access-control implementation details are visible to V12 internal staff and leadership.</p>
+      <button onclick="setMode('private')">Switch to Private Mode</button>
+    </div></div>
+  </section>
+
+  <section>
+    <h2>Enterprise standards adoption</h2>
+    <p class="sub" style="margin-bottom:14px">The standards NEXION requires for a premier enterprise posture. Track adoption — the coverage meter updates live.</p>
+    <div class="card stat" style="max-width:420px;margin-bottom:16px">
+      <div class="label">Standards coverage</div>
+      <div class="value"><span id="stdPct">0</span>%</div>
+      <div class="meter"><span id="stdMeter" style="width:0;background:var(--nexion)"></span></div>
+      <div class="note" id="stdNote"></div>
+    </div>
+    <div class="grid g2" id="stdList"></div>
+  </section>
+</div>
+
+</main>
+
+<footer>
+  <div class="fbar">
+    <span><b style="color:var(--ink-2)">V12 Multimedia</b> — Enterprise Intelligence Frameworks</span>
+    <span>NEXION · Engineering</span>
+    <span>ORION · Strategy</span>
+    <span>AEGIS · Governance</span>
+    <span style="margin-left:auto">Recommendations inform decisions; accountable humans make them.</span>
+  </div>
+</footer>
+
+<script>
+"use strict";
+
+/* ================= STATE ================= */
+const state = { mode: "public", role: "public", view: "overview" };
+const ROLE_RANK = { public: 0, enterprise: 1, staff: 2, executive: 3 };
+const GATE_RANK = { enterprise: 1, staff: 2, executive: 3 };
+const ROLE_LABEL = { public: "Public User", enterprise: "Enterprise Customer", staff: "Internal Staff", executive: "Executive Leadership" };
+
+/* ================= NAV ================= */
+const NAV = [
+  ["overview", "Overview"], ["nexion", "NEXION"], ["orion", "ORION"], ["aegis", "AEGIS"],
+  ["assess", "Assessment Console"], ["pipeline", "Decision Pipeline"], ["framework", "Operating Framework"], ["access", "Access & Standards"]
+];
+function renderNav() {
+  document.getElementById("navBar").innerHTML = NAV.map(([id, label]) =>
+    `<button id="nav-${id}" class="${state.view === id ? "on" : ""}" onclick="go('${id}')">${label}</button>`).join("");
+}
+function go(id) {
+  state.view = id;
+  document.querySelectorAll(".view").forEach(v => v.classList.remove("on"));
+  document.getElementById("view-" + id).classList.add("on");
+  renderNav();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+/* ================= MODE / ROLE ================= */
+function setMode(mode) {
+  state.mode = mode;
+  const sel = document.getElementById("roleSel");
+  if (mode === "public") {
+    sel.innerHTML = `<option value="public">Public User</option><option value="enterprise">Enterprise Customer</option>`;
+    state.role = "public";
+  } else {
+    sel.innerHTML = `<option value="staff">Internal Staff</option><option value="executive">Executive Leadership</option>`;
+    state.role = "staff";
+  }
+  sel.value = state.role;
+  applyAccess();
+}
+function setRole(role) { state.role = role; applyAccess(); }
+function applyAccess() {
+  const isPriv = state.mode === "private";
+  document.getElementById("btnPublic").className = isPriv ? "" : "active-public";
+  document.getElementById("btnPrivate").className = isPriv ? "active-private" : "";
+  const badge = document.getElementById("modeBadge");
+  badge.className = "mode-badge " + (isPriv ? "priv" : "pub");
+  badge.textContent = isPriv ? "Private Mode · " + ROLE_LABEL[state.role] : "Public Mode · " + ROLE_LABEL[state.role];
+  const rank = ROLE_RANK[state.role];
+  document.querySelectorAll(".gated").forEach(el => {
+    const need = GATE_RANK[el.dataset.gate] ?? 2;
+    el.classList.toggle("locked", rank < need);
+  });
+  renderPermTable();
+}
+
+/* ================= INTELLIGENCE DOMAINS ================= */
+const INTEL = {
+  nexion: {
+    cls: "nx", color: "var(--nexion)", tag: "Engineering",
+    name: "NEXION", title: "Chief Engineering & Technical Intelligence Platform",
+    mission: "NEXION is the engineering intelligence layer of the V12 ecosystem. It exists to design, validate, optimize, monitor, and continuously improve every technical component across the organization. Its responsibility is engineering excellence — not business strategy.",
+    objective: "Transform ideas into production-grade engineering systems.",
+    philosophy: "Every recommendation is backed by measurable evidence. Instead of answering \"yes\", NEXION explains the why, the tradeoffs, the risks, the alternatives, the estimated effort, the operational impact, and the long-term maintainability.",
+    questions: ["Is this scalable?", "Is this secure?", "Will this fail?", "Where are the bottlenecks?", "How can latency be reduced?", "How can cost be reduced?", "How can reliability improve?", "How should this be engineered?", "Is this production ready?", "Which standards are missing?", "What technical debt exists?", "What should be automated?"],
+    domains: [
+      ["Software Engineering", ["Frontend", "Backend", "Mobile", "APIs", "SDKs", "Databases", "AI Integration"]],
+      ["Platform Engineering", ["Kubernetes", "Containers", "Service Mesh", "Event Streaming", "Microservices", "Serverless", "Edge Computing"]],
+      ["Infrastructure", ["Cloud Architecture", "Networking", "Load Balancing", "High Availability", "Disaster Recovery", "Storage", "CDN"]],
+      ["Security Engineering", ["Zero Trust", "IAM", "Secrets Management", "Encryption", "Threat Modeling", "Vulnerability Management", "Secure SDLC"]],
+      ["DevOps", ["CI/CD", "Deployment Automation", "Infrastructure as Code", "Release Engineering", "Rollbacks", "Feature Flags"]],
+      ["Reliability Engineering", ["SRE", "SLIs", "SLOs", "Error Budgets", "Incident Response", "Capacity Planning"]],
+      ["Observability", ["Metrics", "Logs", "Traces", "Alerts", "Root Cause Analysis", "Health Monitoring"]],
+      ["AI Engineering", ["Agent Architecture", "Prompt Engineering", "Model Evaluation", "Guardrails", "AI Security", "RAG", "Knowledge Systems"]]
+    ],
+    publicDesc: "In Public Mode, NEXION is an engineering platform for external developers. Access is intentionally limited to approved artifacts and services.",
+    publicItems: ["Technical Documentation", "Architecture Reviews", "API Documentation", "SDK Documentation", "Developer Portal", "Enterprise Consulting", "Engineering Best Practices", "AI Engineering Education", "Certification Programs", "Public Knowledge Base", "Reference Architectures", "Sample Applications"],
+    privateDesc: "Internally, NEXION operates with elevated technical visibility — always governed by role-based permissions, least privilege, auditing, and organizational policy. Never unrestricted.",
+    privateItems: ["Architecture repositories", "Infrastructure inventory", "Deployment pipelines", "Internal APIs", "Monitoring dashboards", "System logs", "Security telemetry", "Policy definitions", "Engineering documentation", "Approved operational metadata"],
+    outputs: ["Architecture diagrams", "Infrastructure plans", "API specifications", "Security assessments", "Performance reports", "Capacity analyses", "Code review recommendations", "Production readiness reports", "Scalability reviews", "Cost optimization analyses", "Risk assessments", "Technical roadmaps"],
+    cta: ["assess", "Open the Production Readiness Console →"]
+  },
+  orion: {
+    cls: "or", color: "var(--orion)", tag: "Strategy",
+    name: "ORION", title: "Chief Strategic Intelligence & Future Development Platform",
+    mission: "ORION guides the long-term direction of the organization. Where NEXION asks \"Can we build this?\", ORION asks \"Should we build this?\" — imagine, challenge, forecast, innovate, guide, expand.",
+    objective: "Turn opportunity into strategy, and strategy into accountable business proposals.",
+    philosophy: "Every recommendation answers: why this opportunity matters, the strategic advantages, the risks, the expected outcomes, the long-term sustainability, and the competitive positioning.",
+    questions: ["Where should we go?", "What industries are next?", "What opportunities exist?", "How do we become larger?", "Should we enter this market?", "How could competitors react?", "What does the future look like?"],
+    domains: [
+      ["Business Strategy", ["Corporate Planning", "Growth Strategy", "Global Strategy", "Brand Evolution"]],
+      ["Market Intelligence", ["Market Research", "Competitive Intelligence", "Industry Forecasting", "Scenario Modeling"]],
+      ["Innovation & Product", ["Product Vision", "Future Technologies", "Innovation Management", "Digital Transformation"]],
+      ["Corporate Development", ["Expansion Planning", "Partnerships", "Pricing Strategy", "Monetization", "Acquisition Evaluation"]],
+      ["Executive Support", ["Executive Planning", "Decision Support", "Risk-Adjusted Growth Models", "Portfolio Strategy"]]
+    ],
+    publicDesc: "In Public Mode, ORION is an executive advisory platform for external clients.",
+    publicItems: ["Executive Advisory Platform", "Innovation Consulting", "Strategic Workshops", "Market Analysis", "Business Transformation", "Leadership Education", "Growth Planning", "Corporate Roadmapping"],
+    privateDesc: "Internally, ORION analyzes approved business information — scoped by role and audited, never a private channel around governance.",
+    privateItems: ["Financial forecasting", "Market intelligence", "Growth initiatives", "Strategic planning", "Competitive analyses", "Executive dashboards", "Product portfolios", "Investment opportunities", "Acquisition evaluations", "Confidential planning"],
+    outputs: ["Business cases", "Strategic roadmaps", "Industry forecasts", "SWOT analyses", "Competitive assessments", "Pricing recommendations", "Expansion strategies", "Innovation portfolios", "Executive briefings", "Scenario planning", "Risk-adjusted growth models"],
+    cta: ["pipeline", "See how strategy enters the Decision Pipeline →"]
+  },
+  aegis: {
+    cls: "ae", color: "#2cc08e", tag: "Governance",
+    name: "AEGIS", title: "Chief Governance, Integrity & Assurance Platform",
+    mission: "AEGIS provides independent governance and oversight across the V12 ecosystem. Its job is to disagree with both NEXION and ORION when necessary — ensuring strategy and engineering remain aligned with policy, legal obligations, security requirements, and accountable decision-making.",
+    objective: "Verify that initiatives are compliant, explainable, auditable, and appropriately governed before major decisions or deployments proceed.",
+    philosophy: "Healthy separation of powers: strategy (ORION), execution (NEXION), oversight (AEGIS). No recommendation becomes a decision without evidence, approval, and an audit trail.",
+    questions: ["Does this comply with policy?", "Can this decision be audited?", "Who approved this change?", "What legal obligations apply?", "Have security requirements been satisfied?", "Is customer data adequately protected?", "Are governance controls documented?"],
+    domains: [
+      ["Policy & Compliance", ["Policy Enforcement", "Regulatory Compliance", "Constitutional Compliance", "Compliance Evidence"]],
+      ["Risk & Audit", ["Risk Management", "Internal Audit", "Risk Escalation", "Third-Party Assessments", "Vendor Risk"]],
+      ["Security & Data Governance", ["Security Governance", "Data Governance", "Data Classification", "Incident Reviews"]],
+      ["AI Governance", ["Model Oversight", "Explainability", "Human-in-the-Loop Controls", "AI Policy"]],
+      ["Change & Controls", ["Change Approval", "Operational Controls", "Approval Workflows", "Separation of Duties"]]
+    ],
+    publicDesc: "In Public Mode, AEGIS shares governance knowledge with the wider community.",
+    publicItems: ["Compliance education", "Governance guidance", "Security best practices", "Audit readiness resources", "Policy templates", "Risk management frameworks"],
+    privateDesc: "Internally, AEGIS reviews authorized governance information — with independence protected so oversight can never be overridden by the functions it oversees.",
+    privateItems: ["Audit records", "Security assessments", "Policy repositories", "Compliance evidence", "Risk registers", "Approval workflows", "Incident reviews", "Governance dashboards"],
+    outputs: ["Compliance verdicts", "Audit findings", "Risk register entries", "Control attestations", "Approval records", "Escalation reports", "Governance dashboards", "Policy gap analyses"],
+    cta: ["access", "Review the Permission Matrix & Standards →"]
+  }
+};
+
+function renderIntel(key) {
+  const d = INTEL[key];
+  const el = document.getElementById("view-" + key);
+  el.innerHTML = `
+    <div class="eyebrow">V12 Intelligence Domain · ${d.tag}</div>
+    <h1 style="letter-spacing:.06em">${d.name}</h1>
+    <p style="font-size:14px;color:${d.color};font-weight:600;margin-top:4px">${d.title}</p>
+    <p class="sub" style="margin-top:12px">${d.mission}</p>
+
+    <section class="grid g2">
+      <div class="card">
+        <div class="eyebrow">Core objective</div>
+        <p style="font-size:15px;font-weight:600">${d.objective}</p>
+        <div class="eyebrow" style="margin-top:16px">Philosophy</div>
+        <p style="font-size:13.5px;color:var(--ink-2)">${d.philosophy}</p>
+      </div>
+      <div class="card">
+        <div class="eyebrow">Primary questions</div>
+        <ul style="margin:6px 0 0 18px;font-size:13.5px;color:var(--ink-2);columns:${d.questions.length > 8 ? 2 : 1};column-gap:24px">
+          ${d.questions.map(q => `<li style="margin-bottom:5px">${q}</li>`).join("")}
+        </ul>
+      </div>
+    </section>
+
+    <section>
+      <h2>${key === "nexion" ? "Technical domains" : key === "orion" ? "Strategic domains" : "Governance domains"}</h2>
+      <div id="doms-${key}">
+        ${d.domains.map(([name, items], i) => `
+          <div class="dom${i === 0 ? " open" : ""}">
+            <div class="dom-head" onclick="this.parentElement.classList.toggle('open')">
+              <span class="tag ${d.cls}">${String(i + 1).padStart(2, "0")}</span>
+              <h3>${name}</h3>
+              <span style="font-size:11.5px;color:var(--muted)">${items.length} areas</span>
+              <span class="arrow">▶</span>
+            </div>
+            <div class="dom-body">${items.map(x => `<span class="chip">${x}</span>`).join("")}</div>
+          </div>`).join("")}
+      </div>
+    </section>
+
+    <section class="grid g2">
+      <div class="card">
+        <span class="mode-badge pub">Public Mode</span>
+        <p style="font-size:13px;color:var(--ink-2);margin:12px 0 10px">${d.publicDesc}</p>
+        ${d.publicItems.map(x => `<span class="chip">${x}</span>`).join("")}
+      </div>
+      <div class="card gated" data-gate="staff">
+        <div class="gate-body">
+          <span class="mode-badge priv">Private Mode</span>
+          <p style="font-size:13px;color:var(--ink-2);margin:12px 0 10px">${d.privateDesc}</p>
+          ${d.privateItems.map(x => `<span class="chip">${x}</span>`).join("")}
+        </div>
+        <div class="gate-cover"><div class="gc-in">
+          <div class="glyph">🔒</div><b>Internal access required</b>
+          <p>Private Mode capabilities are visible to V12 internal staff and leadership only, under least-privilege policy.</p>
+          <button onclick="setMode('private')">Switch to Private Mode</button>
+        </div></div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Expected outputs</h2>
+      <div class="card">${d.outputs.map(x => `<span class="chip">${x}</span>`).join("")}</div>
+      <p style="margin-top:18px"><a href="#" onclick="go('${d.cta[0]}');return false" style="color:${d.color};font-weight:600;font-size:14px;text-decoration:none">${d.cta[1]}</a></p>
+    </section>`;
+}
+
+/* ================= OVERVIEW READINESS TILES ================= */
+const READINESS = [
+  ["Scalability", 9.5, "Strategy, engineering, and governance grow independently; new domains slot in without disrupting the core."],
+  ["Security", 8.5, "Strong conceptually — provided \"unrestricted access\" is replaced with policy-driven authorization everywhere."],
+  ["Production readiness", 8.5, "Reaches 10 with formal decision workflows, service contracts between domains, KPIs, and playbooks."],
+  ["Governance maturity", 8.0, "AEGIS independence plus decision records make every recommendation traceable and auditable."]
+];
+function scoreColor(v) { return v >= 8.5 ? "var(--good)" : v >= 7 ? "var(--warning)" : v >= 5 ? "var(--serious)" : "var(--critical)"; }
+function renderReadiness() {
+  document.getElementById("readinessTiles").innerHTML = READINESS.map(([l, v, n]) => `
+    <div class="card stat">
+      <div class="label">${l}</div>
+      <div class="value">${v.toFixed(1)}<span style="font-size:16px;color:var(--muted)"> / 10</span></div>
+      <div class="meter"><span style="width:${v * 10}%;background:${scoreColor(v)}"></span></div>
+      <div class="note">${n}</div>
+    </div>`).join("");
+}
+
+/* ================= ASSESSMENT CONSOLE ================= */
+const CHECKS = [
+  { cat: "Scalability", items: [
+    ["Horizontal scaling", "Stateless services scale out behind a load balancer", 3],
+    ["Capacity plan", "Load tested against 5–10× expected peak", 2],
+    ["Async where it matters", "Queues / event streaming decouple heavy work", 2],
+    ["Data layer scaling", "Read replicas, partitioning, or sharding strategy exists", 2]
+  ]},
+  { cat: "Security", items: [
+    ["Zero-trust access", "RBAC + least privilege on every internal surface", 3],
+    ["Secrets management", "No secrets in code; vault with rotation", 3],
+    ["Encryption", "TLS in transit, encryption at rest", 2],
+    ["Threat model", "Documented threat model and secure SDLC gates", 2],
+    ["Vulnerability management", "Dependency scanning and patch cadence", 2]
+  ]},
+  { cat: "Reliability", items: [
+    ["SLOs & error budgets", "Availability targets defined and tracked", 3],
+    ["Failover / HA", "Multi-zone deployment with tested failover", 3],
+    ["Disaster recovery", "Backups plus a rehearsed restore procedure", 2],
+    ["Graceful degradation", "Timeouts, retries with backoff, circuit breakers", 2]
+  ]},
+  { cat: "Observability", items: [
+    ["Metrics & alerts", "Golden signals monitored with actionable alerts", 3],
+    ["Centralized logs", "Structured, searchable, with retention policy", 2],
+    ["Distributed tracing", "Requests traceable across service boundaries", 1],
+    ["Incident response", "On-call rotation and post-incident reviews", 2]
+  ]},
+  { cat: "Delivery", items: [
+    ["CI/CD pipeline", "Automated build, test, and deploy", 3],
+    ["Infrastructure as Code", "Environments reproducible from versioned code", 2],
+    ["Safe rollout", "Canary / blue-green with one-step rollback", 2],
+    ["Test coverage", "Meaningful automated tests gate every release", 2]
+  ]},
+  { cat: "Governance", items: [
+    ["Audit logging", "Immutable audit trail for privileged actions", 3],
+    ["Change approval", "Documented approval workflow for production changes", 2],
+    ["Data governance", "Classification, retention, and lineage defined", 2],
+    ["ADRs / decision records", "Architecture decisions documented and traceable", 1]
+  ]}
+];
+function renderChecklist() {
+  document.getElementById("checklist").innerHTML = CHECKS.map((g, gi) => `
+    <div class="check-group">
+      <h4>${g.cat}</h4>
+      ${g.items.map((it, ii) => `
+        <label class="check">
+          <input type="checkbox" data-g="${gi}" data-i="${ii}">
+          <span><span class="ct">${it[0]}</span><br><span class="cd">${it[1]}</span></span>
+        </label>`).join("")}
+    </div>`).join("");
+}
+let lastReport = "";
+function runAssessment() {
+  const name = document.getElementById("sysName").value.trim() || "Unnamed system";
+  const desc = document.getElementById("sysDesc").value.trim();
+  const boxes = [...document.querySelectorAll("#checklist input")];
+  const cats = CHECKS.map((g, gi) => {
+    let got = 0, max = 0;
+    const missing = [];
+    g.items.forEach((it, ii) => {
+      max += it[2];
+      const on = boxes.find(b => +b.dataset.g === gi && +b.dataset.i === ii).checked;
+      if (on) got += it[2]; else missing.push(it);
+    });
+    return { cat: g.cat, got, max, pct: got / max, missing };
+  });
+  const totGot = cats.reduce((s, c) => s + c.got, 0);
+  const totMax = cats.reduce((s, c) => s + c.max, 0);
+  const score = Math.round((totGot / totMax) * 100) / 10;
+
+  const tiers = [
+    [8.5, "vb-good", "✔ Production Ready", "Ship it — then keep measuring. Strong posture across engineering and governance; remaining gaps are refinements, not blockers."],
+    [7.0, "vb-warn", "◐ Conditional Go", "Deployable with guardrails. Close the high-weight gaps below before scaling traffic or expanding blast radius."],
+    [5.0, "vb-serious", "▲ Not Production Ready", "Core disciplines are missing. NEXION recommends a hardening sprint before any production exposure."],
+    [-1, "vb-crit", "✖ Do Not Deploy", "Foundational engineering and governance controls are absent. Deploying now would create unmanaged risk."]
+  ];
+  const tier = tiers.find(t => score >= t[0]);
+
+  document.getElementById("resultCard").style.display = "block";
+  document.getElementById("scoreNum").textContent = score.toFixed(1);
+  document.getElementById("scoreNum").style.color = scoreColor(score);
+  const vb = document.getElementById("verdictBadge");
+  vb.className = "verdict-badge " + tier[1];
+  vb.textContent = tier[2];
+  document.getElementById("verdictLine").textContent = `${name}: ${tier[3]}`;
+
+  document.getElementById("catBars").innerHTML = cats.map(c => `
+    <div class="cat-row">
+      <span class="cn">${c.cat}</span>
+      <div class="meter"><span style="width:${Math.round(c.pct * 100)}%;background:${scoreColor(c.pct * 10)}"></span></div>
+      <span class="cv">${Math.round(c.pct * 100)}%</span>
+    </div>`).join("");
+
+  const by = n => cats.find(c => c.cat === n).pct;
+  const ans = (p, yes, mid, no) => p >= 0.75 ? ["✔", "#35c435", yes] : p >= 0.4 ? ["◐", "var(--warning)", mid] : ["✖", "#e66767", no];
+  const PQ = [
+    ["Is this scalable?", ans(by("Scalability"), "Yes — scale-out design with tested capacity.", "Partially — some scaling patterns exist, others are assumptions.", "No — scaling is untested and likely vertical-only.")],
+    ["Is this secure?", ans((by("Security")), "Yes — zero-trust posture with managed secrets and a threat model.", "Partially — core controls exist but the posture has gaps.", "No — critical security controls are missing.")],
+    ["Will this break?", ans((by("Reliability") + by("Observability")) / 2, "Failures are expected and survivable — HA, DR, and monitoring are in place.", "It will bend — some resilience exists, but recovery is partly unrehearsed.", "Yes, and you may not know when it does — resilience and observability are both thin.")],
+    ["Is this production ready?", score >= 8.5 ? ["✔", "#35c435", "Yes — with continuous monitoring and improvement."] : score >= 7 ? ["◐", "var(--warning)", "Conditionally — close the gap list first."] : ["✖", "#e66767", "No — foundational work remains."]]
+  ];
+  document.getElementById("pqAnswers").innerHTML = PQ.map(([q, a]) => `
+    <div class="cat-row">
+      <span class="cn" style="width:210px;color:var(--ink)">${q}</span>
+      <span style="font-size:13px;color:${a[1]};font-weight:700;flex-shrink:0">${a[0]}</span>
+      <span style="font-size:13px;color:var(--ink-2)">${a[2]}</span>
+    </div>`).join("");
+
+  const gaps = cats.flatMap(c => c.missing.map(m => ({ cat: c.cat, t: m[0], d: m[1], w: m[2] })))
+    .sort((a, b) => b.w - a.w);
+  document.getElementById("gapList").innerHTML = gaps.length ? gaps.map(g => {
+    const sev = g.w >= 3 ? ["CRITICAL", "#e66767"] : g.w === 2 ? ["MAJOR", "var(--warning)"] : ["MINOR", "var(--muted)"];
+    return `<div class="gap-item"><span class="sev" style="color:${sev[1]}">${sev[0]}</span><span><b>${g.t}</b> <span style="color:var(--muted)">(${g.cat})</span> — ${g.d}</span></div>`;
+  }).join("") : `<p style="font-size:13.5px;color:#35c435;font-weight:600">No gaps — every control on the checklist is in place. Keep the audit evidence current.</p>`;
+
+  lastReport =
+`NEXION PRODUCTION READINESS REPORT
+System: ${name}${desc ? "\nDescription: " + desc : ""}
+Overall score: ${score.toFixed(1)} / 10 — ${tier[2].replace(/^[✔◐▲✖] /, "")}
+
+CATEGORY SCORES
+${cats.map(c => `  ${c.cat.padEnd(14)} ${Math.round(c.pct * 100)}%`).join("\n")}
+
+PRIMARY QUESTIONS
+${PQ.map(([q, a]) => `  ${q.padEnd(26)} ${a[2]}`).join("\n")}
+
+GAP LIST (${gaps.length})
+${gaps.length ? gaps.map(g => `  [${g.w >= 3 ? "CRITICAL" : g.w === 2 ? "MAJOR" : "MINOR"}] ${g.t} (${g.cat})`).join("\n") : "  None"}
+
+Recommendation feeds the V12 Decision Pipeline; final go/no-go rests with accountable executive review after AEGIS assurance.
+— Generated by NEXION, V12 Enterprise Intelligence OS`;
+  document.getElementById("reportBox").textContent = lastReport;
+  document.getElementById("resultCard").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+function resetAssessment() {
+  document.querySelectorAll("#checklist input").forEach(b => b.checked = false);
+  document.getElementById("sysName").value = "";
+  document.getElementById("sysDesc").value = "";
+  document.getElementById("resultCard").style.display = "none";
+}
+function toggleReport() {
+  const b = document.getElementById("reportBox");
+  b.style.display = b.style.display === "block" ? "none" : "block";
+}
+function copyReport(btn) {
+  const done = () => { btn.textContent = "Copied ✔"; setTimeout(() => btn.textContent = "Copy report", 1500); };
+  if (navigator.clipboard) navigator.clipboard.writeText(lastReport).then(done, done); else done();
+}
+
+/* ================= PIPELINE ================= */
+const STAGES = [
+  ["Opportunity", "", "A market signal, idea, or need enters the system.", "Anyone can raise an opportunity. It is logged with an owner and a hypothesis before any analysis begins."],
+  ["ORION — Strategy & Vision", "or", "Market fit, competitive position, monetization, risk.", "ORION produces a business case: why it matters, strategic advantages, expected outcomes, and risk-adjusted scenarios. A recommendation — never a decision."],
+  ["Business Proposal", "", "Strategy crystallized into a reviewable artifact.", "Standardized format: objectives, evidence references, confidence score, success criteria, and required investment."],
+  ["NEXION — Engineering & Delivery", "nx", "Architecture, feasibility, cost, security, readiness.", "NEXION validates technical feasibility and produces the delivery plan: architecture, infrastructure, security assessment, capacity analysis, and effort estimate."],
+  ["Technical Validation", "", "Evidence that the plan will survive production.", "Prototypes, load tests, threat models, and a production readiness score from the Assessment Console."],
+  ["AEGIS — Governance & Assurance", "ae", "Compliance, legal, audit, and policy review.", "AEGIS independently verifies policy compliance, legal obligations, data protection, and auditability. AEGIS can escalate or object — and its objection is recorded."],
+  ["Executive Review", "", "Accountable humans weigh all three perspectives.", "Executives review ORION's case, NEXION's plan, and AEGIS's assurance verdict. Conflicting recommendations are expected — the resolution and rationale are documented in a decision record."],
+  ["Approved Initiative", "", "A decision with an owner, budget, and audit trail.", "The decision record captures who approved, on what evidence, and against which success criteria — so future teams understand why, not just who."],
+  ["Implementation", "", "NEXION-governed delivery through CI/CD.", "Built under secure SDLC, deployed via automated pipelines with canary rollout and rollback plans."],
+  ["Continuous Monitoring", "", "SLOs, error budgets, security telemetry, KPIs.", "NEXION watches reliability and cost; ORION watches market outcomes; AEGIS watches control effectiveness."],
+  ["Continuous Improvement", "", "Findings feed back into the next opportunity.", "Post-incident reviews, KPI deltas, and audit findings become new opportunities — the loop closes."]
+];
+function renderPipe() {
+  document.getElementById("pipeRoot").innerHTML = STAGES.map(([t, cls, d, detail], i) => `
+    ${i > 0 ? '<div class="pconn"></div>' : ""}
+    <div class="pstage" id="ps-${i}" onclick="this.classList.toggle('open')">
+      <div class="pt"><span class="pnum">${i + 1}</span> ${t} ${cls ? `<span class="tag ${cls}">${cls === "nx" ? "NEXION" : cls === "or" ? "ORION" : "AEGIS"}</span>` : ""}</div>
+      <div class="pd">${d}</div>
+      <div class="pdetail">${detail}</div>
+    </div>`).join("");
+}
+let simRunning = false;
+function runSim() {
+  if (simRunning) return;
+  simRunning = true;
+  const btn = document.getElementById("simBtn");
+  btn.textContent = "Simulating…";
+  document.querySelectorAll(".pstage").forEach(p => p.classList.remove("lit", "done-lit"));
+  STAGES.forEach((_, i) => {
+    setTimeout(() => {
+      if (i > 0) { const prev = document.getElementById("ps-" + (i - 1)); prev.classList.remove("lit"); prev.classList.add("done-lit"); }
+      const el = document.getElementById("ps-" + i);
+      el.classList.add("lit");
+      el.scrollIntoView({ behavior: "smooth", block: "center" });
+      if (i === STAGES.length - 1) setTimeout(() => {
+        el.classList.remove("lit"); el.classList.add("done-lit");
+        btn.textContent = "▶ Run pipeline simulation";
+        simRunning = false;
+      }, 700);
+    }, 650 * i);
+  });
+}
+
+/* ================= PERMISSION MATRIX ================= */
+const PERMS = [
+  ["Technical documentation & developer SDK", 1, 1, 1, 1],
+  ["Public APIs, tutorials & marketplace", 1, 1, 1, 1],
+  ["Business planning tools & general AI assistance", 1, 1, 1, 1],
+  ["Private APIs & workflow automation", 0, 1, 1, 1],
+  ["Agent marketplace & advanced analytics", 0, 1, 1, 1],
+  ["Dedicated infrastructure & compliance tools", 0, 1, 1, 1],
+  ["Internal AI (NEXION / ORION / AEGIS private mode)", 0, 0, 2, 2],
+  ["Internal logs, monitoring & workflows", 0, 0, 2, 2],
+  ["Departmental systems (eng / sec / finance / ops)", 0, 0, 2, 1],
+  ["Security oversight & AI governance", 0, 0, 0, 1],
+  ["Corporate planning & strategic roadmaps", 0, 0, 0, 1],
+  ["Financial dashboards & all analytics", 0, 0, 0, 1],
+  ["Deployment controls & architecture governance", 0, 0, 2, 1]
+];
+const PERM_COLS = ["public", "enterprise", "staff", "executive"];
+function renderPermTable() {
+  const cur = PERM_COLS.indexOf(state.role);
+  const cell = v => v === 1 ? '<span class="yes">✔</span>' : v === 2 ? '<span class="partial">◐</span>' : '<span class="no">—</span>';
+  document.getElementById("permTable").innerHTML = `
+    <tr><th>Capability</th>${PERM_COLS.map((c, i) => `<th style="${i === cur ? "color:var(--nexion)" : ""}">${ROLE_LABEL[c]}${i === cur ? " ●" : ""}</th>`).join("")}</tr>
+    ${PERMS.map(r => `<tr>${[`<td>${r[0]}</td>`, ...r.slice(1).map((v, i) => `<td style="${i === cur ? "background:rgba(57,135,229,.07)" : ""}">${cell(v)}</td>`)].join("")}</tr>`).join("")}`;
+}
+
+/* ================= INTERNAL PRINCIPLES ================= */
+const PRINCIPLES = [
+  ["Role-based access control (RBAC)", "Every capability maps to a role; departmental staff access is limited according to role."],
+  ["Attribute-based policies (ABAC)", "Context — time, device, sensitivity — refines what a role can touch."],
+  ["Just-in-time privileged access", "Elevated access is granted per task, time-boxed, and auto-revoked."],
+  ["Immutable audit logs", "Every privileged action by a human or an AI domain is recorded and tamper-evident."],
+  ["Separation of duties", "No single role — and no AI domain — can propose, approve, and deploy the same change."],
+  ["Least privilege by default", "NEXION, ORION, and AEGIS see only what policy grants. \"Unrestricted access\" does not exist in this architecture."]
+];
+function renderPrinciples() {
+  document.getElementById("principles").innerHTML = PRINCIPLES.map(([t, d]) => `
+    <div class="card" style="padding:16px"><h3 style="font-size:13.5px">${t}</h3><p style="font-size:12.5px;color:var(--ink-2);margin-top:5px">${d}</p></div>`).join("");
+}
+
+/* ================= STANDARDS ================= */
+const STANDARDS = [
+  ["Enterprise Architecture", "TOGAF-aligned architecture practice"],
+  ["Security Architecture", "Zero Trust, NIST CSF, ISO/IEC 27001"],
+  ["Cloud Architecture", "Well-Architected Framework reviews"],
+  ["Site Reliability Engineering", "SLIs, SLOs, error budgets"],
+  ["IT Service Management", "ITIL-aligned service operations"],
+  ["Software Delivery", "Secure SDLC, DevSecOps"],
+  ["API Governance", "OpenAPI / AsyncAPI, versioning standards"],
+  ["Data Governance", "Catalog, lineage, retention, classification"],
+  ["AI Governance", "Model evaluation, monitoring, explainability, human oversight"],
+  ["Risk & Compliance", "Continuous control monitoring, audit evidence"],
+  ["Decision Records", "ADRs and decision registers"],
+  ["Business Continuity & DR", "Tested continuity and disaster recovery"],
+  ["Observability Standards", "Metrics, logs, traces, alerting"],
+  ["Cost Governance", "FinOps practice"],
+  ["Platform Engineering", "Reusable internal service standards"]
+];
+function renderStandards() {
+  document.getElementById("stdList").innerHTML = STANDARDS.map(([t, d], i) => `
+    <label class="std"><input type="checkbox" data-s="${i}" onchange="updateStdMeter()">
+      <span><span class="st">${t}</span><br><span class="sd">${d}</span></span></label>`).join("");
+  updateStdMeter();
+}
+function updateStdMeter() {
+  const n = [...document.querySelectorAll("#stdList input")].filter(b => b.checked).length;
+  const pct = Math.round((n / STANDARDS.length) * 100);
+  document.getElementById("stdPct").textContent = pct;
+  const m = document.getElementById("stdMeter");
+  m.style.width = pct + "%";
+  m.style.background = scoreColor(pct / 10);
+  document.getElementById("stdNote").textContent =
+    pct === 100 ? "Premier enterprise standard achieved — all 15 frameworks adopted." :
+    pct >= 60 ? `${n} of ${STANDARDS.length} adopted — strong posture; close the remaining gaps.` :
+    pct > 0 ? `${n} of ${STANDARDS.length} adopted — early maturity; prioritize security, SRE, and decision records.` :
+    "Nothing adopted yet — check off frameworks as your organization adopts them.";
+}
+
+/* ================= OPERATING FRAMEWORK ================= */
+const PILLARS = [
+  ["Governance artifacts", "Typed, versioned templates for every recommendation and decision — ADRs, decision records, assurance verdicts — with owners and retention.", "artifactTable"],
+  ["Decision workflows", "Named workflows with steps, approvers, and SLAs for initiative approval, production change, and exceptions.", "workflowCards"],
+  ["Service contracts between domains", "Explicit input/output contracts for every ORION ↔ NEXION ↔ AEGIS handoff, with quality gates.", "contractCards"],
+  ["Lifecycle management", "One authoritative lifecycle state per initiative, with entry and exit criteria for each state.", "lifecycleStrip"],
+  ["KPIs", "Measurable indicators per domain, reviewed on a cadence, tied to error budgets and business outcomes.", "kpiTable"],
+  ["AI evaluation procedures", "Scheduled evaluation, monitoring, explainability, and human-oversight controls for each intelligence domain.", "aiEvalTable"],
+  ["Operational playbooks", "Pre-agreed incident, rollback, escalation, and conflict-resolution procedures.", "playbookList"]
+];
+const pillarDone = new Array(PILLARS.length).fill(false);
+function renderPillars() {
+  document.getElementById("pillarList").innerHTML = PILLARS.map(([t, d, anchor], i) => `
+    <label class="pillar${pillarDone[i] ? " done" : ""}" id="pl-${i}">
+      <input type="checkbox" ${pillarDone[i] ? "checked" : ""} onchange="togglePillar(${i}, this.checked)">
+      <span style="flex:1"><span class="pt2">${i + 1} · ${t}</span><br><span class="pd2">${d}</span></span>
+      <a class="jump" href="#" onclick="document.getElementById('${anchor}').scrollIntoView({behavior:'smooth',block:'center'});return false">view ↓</a>
+    </label>`).join("");
+}
+function togglePillar(i, on) {
+  pillarDone[i] = on;
+  document.getElementById("pl-" + i).classList.toggle("done", on);
+  const n = pillarDone.filter(Boolean).length;
+  const score = Math.round((8.5 + 1.5 * n / PILLARS.length) * 10) / 10;
+  document.getElementById("fwScore").textContent = score.toFixed(1);
+  const m = document.getElementById("fwMeter");
+  m.style.width = score * 10 + "%";
+  m.style.background = scoreColor(score);
+  document.getElementById("fwNote").textContent = n === PILLARS.length
+    ? "All 7 pillars formalized — premier enterprise operating framework. 10/10."
+    : `${n} of 7 pillars formalized. Each formalized pillar moves the score toward 10.`;
+}
+
+const ARTIFACTS = [
+  ["Architecture Decision Record (ADR)", "NEXION", "Engineering lead", "Permanent", "ADR-NNN · Title\nStatus: Proposed | Accepted | Superseded\nContext: What forces are at play?\nDecision: What we chose.\nConsequences: What becomes easier / harder.\nAlternatives considered: With reasons rejected.\nEvidence: Benchmarks, prototypes, references."],
+  ["Decision Record", "Executive Review", "Accountable executive", "Permanent", "DR-NNN · Initiative\nInputs: ORION business case, NEXION validation, AEGIS verdict\nConflicts raised: Documented disagreements between domains\nResolution rationale: Why this path was chosen\nApprover: Name, role, date\nSuccess criteria: Measurable, time-bound\nReview date: When we check if it worked."],
+  ["Business Case", "ORION", "Strategy lead", "7 years", "BC-NNN · Opportunity\nWhy it matters · Strategic advantages · Risks\nExpected outcomes with confidence score\nScenario models: base / upside / downside\nEvidence references: market data, research"],
+  ["Production Readiness Report", "NEXION", "Engineering lead", "Life of system", "PRR-NNN · System\nScore per category (scalability, security, reliability, observability, delivery, governance)\nGap list with severities · Load test evidence\nGo / conditional / no-go recommendation"],
+  ["Assurance Verdict", "AEGIS", "Governance lead", "Permanent", "AV-NNN · Initiative\nPolicies evaluated · Compliance result per policy\nLegal obligations · Data protection assessment\nObjections (if any) — recorded even when overridden\nAudit trail reference"],
+  ["Risk Register Entry", "AEGIS", "Risk owner", "Until retired + 3y", "RR-NNN · Risk\nDescription · Likelihood · Impact · Owner\nMitigation plan with dates · Residual risk\nEscalation threshold"],
+  ["Post-Incident Review", "NEXION", "Incident commander", "5 years", "PIR-NNN · Incident\nTimeline · Root cause (blameless)\nCustomer impact · What went well / poorly\nAction items with owners and due dates"],
+  ["Control Attestation", "AEGIS", "Control owner", "Audit cycle + 3y", "CA-NNN · Control\nControl objective · Test performed · Result\nEvidence artifacts · Next test date"]
+];
+function renderArtifacts() {
+  document.getElementById("artifactTable").innerHTML = `
+    <tr><th>Artifact</th><th>Owning domain</th><th>Approver</th><th>Retention</th></tr>
+    ${ARTIFACTS.map((a, i) => `<tr style="cursor:pointer" onclick="showTpl(${i})"><td style="color:var(--ink);font-weight:600">${a[0]}</td><td>${a[1]}</td><td>${a[2]}</td><td>${a[3]}</td></tr>`).join("")}`;
+}
+let tplOpen = -1;
+function showTpl(i) {
+  const box = document.getElementById("artifactTpl");
+  if (tplOpen === i) { box.style.display = "none"; tplOpen = -1; return; }
+  tplOpen = i;
+  box.style.display = "block";
+  box.textContent = "TEMPLATE — " + ARTIFACTS[i][0] + "\n\n" + ARTIFACTS[i][4];
+}
+
+const WORKFLOWS = [
+  ["Initiative Approval", "New products, markets, or major systems", [
+    "ORION files Business Case (BC)", "NEXION attaches Production Readiness assessment", "AEGIS issues Assurance Verdict",
+    "Executive Review resolves conflicts", "Decision Record signed & published", "Initiative enters lifecycle at Approved"
+  ], "SLA: 15 business days end-to-end · Quorum: 2+ executives · All three domain artifacts mandatory"],
+  ["Production Change", "Any change to production systems", [
+    "Change request with rollback plan", "Automated checks (tests, security scans) pass", "Peer review + role-scoped approval",
+    "Canary deployment with SLO watch", "Full rollout or one-step rollback", "Change log entry auto-recorded"
+  ], "SLA: standard 2 days, expedited 4 hours · Separation of duties: author ≠ approver ≠ deployer"],
+  ["Exception & Escalation", "Policy exceptions or unresolved domain conflicts", [
+    "Requestor documents exception + compensating controls", "AEGIS assesses risk and records objection if any",
+    "Time-boxed exception granted or refused by accountable executive", "Exception register updated with expiry",
+    "Expired exceptions auto-escalate for renewal or closure"
+  ], "SLA: 5 business days · Every exception has an expiry date — no permanent exceptions"]
+];
+function renderWorkflows() {
+  document.getElementById("workflowCards").innerHTML = WORKFLOWS.map(([t, scope, steps, sla]) => `
+    <div class="card">
+      <h3>${t}</h3>
+      <p style="font-size:12px;color:var(--muted);margin:3px 0 10px">${scope}</p>
+      ${steps.map((s, i) => `<div class="wf-step"><span class="n">${i + 1}</span><span>${s}</span></div>`).join("")}
+      <div class="sla-line">${sla}</div>
+    </div>`).join("");
+}
+
+const CONTRACTS = [
+  ["ORION → NEXION", "or", "nx", "Proposal Handoff",
+    ["Business case (BC)", "Success criteria", "Budget envelope", "Target timeline"],
+    ["Feasibility verdict", "Architecture options with tradeoffs", "Effort & cost estimate", "Readiness gaps"],
+    "Response within 10 business days · Quality gate: every option carries evidence, risk, and maintainability notes"],
+  ["NEXION → AEGIS", "nx", "ae", "Validation Package",
+    ["Architecture & data flows", "Security assessment", "Readiness report", "Deployment plan"],
+    ["Assurance verdict", "Compliance findings", "Required controls", "Objections (recorded)"],
+    "Review within 7 business days · Quality gate: verdict cites specific policies, never a bare yes/no"],
+  ["AEGIS → Executive Review", "ae", "", "Assurance Delivery",
+    ["Assurance verdict", "Risk register deltas", "Open exceptions", "Audit trail references"],
+    ["Decision record", "Conflict resolutions", "Conditions of approval", "Review date"],
+    "Escalation path: AEGIS objections cannot be closed by ORION or NEXION — only by accountable executives, in writing"],
+  ["NEXION → ORION", "nx", "or", "Delivery Feedback",
+    ["Actual cost & timeline vs. estimate", "SLO performance", "Incident summaries", "Technical debt register"],
+    ["Updated forecasts", "Strategy adjustments", "Reprioritized portfolio", "New opportunities"],
+    "Cadence: monthly · Quality gate: KPI deltas quantified, not narrated"]
+];
+function renderContracts() {
+  document.getElementById("contractCards").innerHTML = CONTRACTS.map(([route, c1, c2, name, inputs, outputs, sla]) => `
+    <div class="card">
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
+        <h3>${name}</h3><span style="margin-left:auto"></span>
+        ${c1 ? `<span class="tag ${c1}">${route.split(" ")[0]}</span>` : ""}<span style="color:var(--muted)">→</span>
+        ${c2 ? `<span class="tag ${c2}">${route.split(" ")[2]}</span>` : `<span class="tag" style="background:var(--surface-3);color:var(--ink-2)">EXEC</span>`}
+      </div>
+      <div class="contract-io">
+        <div class="io"><h5>Inputs</h5><ul>${inputs.map(x => `<li>${x}</li>`).join("")}</ul></div>
+        <div class="io"><h5>Outputs</h5><ul>${outputs.map(x => `<li>${x}</li>`).join("")}</ul></div>
+      </div>
+      <div class="sla-line">${sla}</div>
+    </div>`).join("");
+}
+
+const LIFECYCLE = [
+  ["Draft", "Opportunity logged with an owner and hypothesis.", "Exit: business case accepted for analysis."],
+  ["Proposed", "ORION business case complete with confidence score.", "Exit: NEXION engaged under the Proposal Handoff contract."],
+  ["Validated", "NEXION technical validation and readiness report done.", "Exit: validation package delivered to AEGIS."],
+  ["Assured", "AEGIS assurance verdict issued; objections recorded.", "Exit: package reaches Executive Review."],
+  ["Approved", "Decision record signed by accountable executives.", "Exit: funded team and delivery plan in place."],
+  ["Live", "In production under secure SDLC and change workflow.", "Exit criteria: SLOs stable for one full review cycle."],
+  ["Monitored", "KPIs, SLOs, and control effectiveness tracked on cadence.", "Exit: material change → re-enters pipeline; or retirement is proposed."],
+  ["Retired", "Deprecated, data handled per retention policy, lessons recorded.", "Terminal state — post-retirement review feeds new opportunities."]
+];
+let lcOpen = -1;
+function renderLifecycle() {
+  document.getElementById("lifecycleStrip").innerHTML = LIFECYCLE.map(([t], i) =>
+    `<button class="lc-state" id="lc-${i}" onclick="showLc(${i})">${t}</button>`).join('<span style="color:var(--muted);align-self:center">→</span>');
+}
+function showLc(i) {
+  const d = document.getElementById("lifecycleDetail");
+  document.querySelectorAll(".lc-state").forEach(b => b.classList.remove("on"));
+  if (lcOpen === i) { d.style.display = "none"; lcOpen = -1; return; }
+  lcOpen = i;
+  document.getElementById("lc-" + i).classList.add("on");
+  d.style.display = "block";
+  d.innerHTML = `<h3>${i + 1} · ${LIFECYCLE[i][0]}</h3><p style="font-size:13.5px;color:var(--ink-2);margin-top:6px">${LIFECYCLE[i][1]}</p><p style="font-size:12.5px;color:var(--muted);margin-top:6px">${LIFECYCLE[i][2]}</p>`;
+}
+
+const KPIS = [
+  ["NEXION", "nx", [
+    ["Availability vs. SLO", "≥ 99.9% core services", "Weekly"],
+    ["Error budget burn", "< 100% per quarter", "Weekly"],
+    ["Change failure rate", "< 10% of deployments", "Monthly"],
+    ["Mean time to recovery", "< 1 hour, P1 incidents", "Monthly"],
+    ["Infra cost vs. plan", "± 10% of FinOps forecast", "Monthly"]
+  ]],
+  ["ORION", "or", [
+    ["Forecast accuracy", "± 15% at 2 quarters", "Quarterly"],
+    ["Initiative hit rate", "≥ 60% meet success criteria", "Quarterly"],
+    ["Time opportunity → decision", "≤ 20 business days", "Monthly"],
+    ["Revenue from new initiatives", "Per approved business case", "Quarterly"]
+  ]],
+  ["AEGIS", "ae", [
+    ["Control pass rate", "≥ 95% continuous monitoring", "Weekly"],
+    ["Audit findings closed on time", "100% by due date", "Monthly"],
+    ["Open exceptions past expiry", "Zero", "Weekly"],
+    ["Decision records complete", "100% of approved initiatives", "Monthly"]
+  ]]
+];
+function renderKpis() {
+  document.getElementById("kpiTable").innerHTML = `
+    <tr><th>Domain</th><th>Indicator</th><th>Target</th><th>Review cadence</th></tr>
+    ${KPIS.flatMap(([d, cls, rows]) => rows.map((r, i) => `
+      <tr>${i === 0 ? `<td rowspan="${rows.length}" style="vertical-align:top"><span class="tag ${cls}">${d}</span></td>` : ""}
+      <td style="color:var(--ink)">${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td></tr>`)).join("")}`;
+}
+
+const AI_EVALS = [
+  ["Capability evaluation", "Benchmark each domain against a golden task set; regression-gate model or prompt changes", "Before every model/prompt change + quarterly", "Eval scores in decision register"],
+  ["Grounding & accuracy audit", "Sample outputs checked against source evidence; hallucination rate tracked", "Monthly", "Accuracy report with error taxonomy"],
+  ["Guardrail testing", "Red-team access boundaries: private-mode leakage, prompt injection, role escalation", "Quarterly + after any access change", "Red-team findings + remediation log"],
+  ["Explainability review", "Recommendations must cite evidence and confidence; unexplainable outputs rejected", "Continuous (automated) + monthly sample", "Explainability compliance rate"],
+  ["Human oversight check", "Verify no AI output became a decision without a named accountable approver", "Monthly", "Oversight attestation (AEGIS)"],
+  ["Drift & bias monitoring", "Monitor output distributions and recommendation patterns for drift or systematic bias", "Continuous dashboards, quarterly deep-dive", "Drift report in risk register"]
+];
+function renderAiEvals() {
+  document.getElementById("aiEvalTable").innerHTML = `
+    <tr><th>Procedure</th><th>What it does</th><th>Cadence</th><th>Evidence produced</th></tr>
+    ${AI_EVALS.map(r => `<tr><td style="color:var(--ink);font-weight:600">${r[0]}</td><td>${r[1]}</td><td>${r[2]}</td><td>${r[3]}</td></tr>`).join("")}`;
+}
+
+const PLAYBOOKS = [
+  ["Incident Response (P1)", "nx", [
+    "Auto-page on-call from SLO alert; incident commander assigned within 10 minutes",
+    "Declare severity; open incident channel; start timeline log",
+    "Mitigate first (rollback, failover, feature-flag off) — diagnose after service is restored",
+    "Comms: status page within 30 minutes, stakeholder updates every hour",
+    "Blameless post-incident review within 5 business days; action items into backlog with owners"
+  ]],
+  ["Emergency Rollback", "nx", [
+    "Any deployer may trigger one-step rollback — no approval needed to restore service",
+    "Rollback target is always the last known-good release (pinned automatically)",
+    "Verify SLO recovery; freeze further deploys until cause is understood",
+    "File expedited change record retroactively within 24 hours"
+  ]],
+  ["Domain Conflict Resolution", "ae", [
+    "Conflicting recommendations (e.g., ORION says go, NEXION says not ready) are documented side-by-side — never negotiated away privately",
+    "Each domain states its evidence, confidence, and what would change its position",
+    "AEGIS verifies process compliance, not the winner",
+    "Accountable executive decides within the workflow SLA; rationale recorded in the decision record",
+    "The overridden domain's objection stays on the record — audit must show the dissent"
+  ]],
+  ["Security Breach Escalation", "ae", [
+    "Contain: isolate affected systems, revoke exposed credentials, preserve forensics",
+    "Notify security lead + AEGIS within 1 hour; executive within 4 hours",
+    "Assess data exposure against classification; trigger legal/regulatory notification clocks",
+    "Eradicate and recover under incident workflow; heightened monitoring for 30 days",
+    "Full review: control gaps into risk register, attestations re-tested"
+  ]],
+  ["Exception Expiry", "ae", [
+    "30 days before expiry: owner auto-notified with renewal-or-close choice",
+    "At expiry with no action: exception escalates to accountable executive automatically",
+    "Renewal requires fresh AEGIS risk assessment — never a rubber stamp",
+    "Closed exceptions verified: compensating controls removed or made permanent"
+  ]]
+];
+function renderPlaybooks() {
+  document.getElementById("playbookList").innerHTML = PLAYBOOKS.map(([t, cls, steps], i) => `
+    <div class="dom${i === 0 ? " open" : ""}">
+      <div class="dom-head" onclick="this.parentElement.classList.toggle('open')">
+        <span class="tag ${cls}">${cls === "nx" ? "NEXION" : "AEGIS"}</span>
+        <h3>${t}</h3>
+        <span style="font-size:11.5px;color:var(--muted)">${steps.length} steps</span>
+        <span class="arrow">▶</span>
+      </div>
+      <div class="dom-body" style="padding-top:10px">
+        ${steps.map((s, j) => `<div class="wf-step"><span class="n">${j + 1}</span><span>${s}</span></div>`).join("")}
+      </div>
+    </div>`).join("");
+}
+
+/* ================= INIT ================= */
+renderNav();
+renderIntel("nexion"); renderIntel("orion"); renderIntel("aegis");
+renderReadiness(); renderChecklist(); renderPipe(); renderPrinciples(); renderStandards();
+renderPillars(); renderArtifacts(); renderWorkflows(); renderContracts(); renderLifecycle(); renderKpis(); renderAiEvals(); renderPlaybooks();
+setMode("public");
+</script>
+
+<script>
+"use strict";
+
+/* ---- live data layer ----
+   Priority: 1) window.NEXION_API_BASE — deployed NEXION backend (GitHub + Datadog + DB)
+             2) direct GitHub public API from this page (no backend needed, public repos)
+             3) embedded snapshot, then clearly-labelled sample data */
+window.NEXION_API_BASE = window.NEXION_API_BASE || "";
+/* Optional: a fine-grained GitHub token raises rate limits + enables private repos. */
+window.NEXION_GITHUB_TOKEN = window.NEXION_GITHUB_TOKEN || "";
+/* ---- configured GitHub target ---- */
+var NEXION_REPO = "PapiSlimm/NEXIOX-OS";                 /* your repo (default in the input box) */
+var NEXION_REPO_FALLBACK = "PapiSlimm/V12-SonicStream";  /* auto-fallback if the default isn't visible to the public API */
+var NEXION_SNAPSHOT = {
+  repo: "PapiSlimm/V12-SonicStream", fetchedAt: "2026-07-23T04:12Z", defaultBranch: "main",
+  stars: 0, forks: 0, openPRs: 0, openIssuesInclPRs: 0, lastPush: "2026-03-02T13:20:34Z"
+};
+async function nxFetch(path) {
+  var base = window.NEXION_API_BASE; if (!base) return null;
+  try {
+    var r = await fetch(base.replace(/\/$/, "") + path, { headers: { "accept": "application/json" } });
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    return await r.json();
+  } catch (e) { return { __error: String(e.message || e) }; }
+}
+async function ghApi(path) {
+  var h = { "accept": "application/vnd.github+json" };
+  if (window.NEXION_GITHUB_TOKEN) h["authorization"] = "Bearer " + window.NEXION_GITHUB_TOKEN;
+  var r = await fetch("https://api.github.com" + path, { headers: h });
+  if (!r.ok) { var err = new Error("HTTP " + r.status); err.status = r.status; throw err; }
+  return r.json();
+}
+function nxAgo(iso) {
+  if (!iso) return "—";
+  var s = (Date.now() - new Date(iso).getTime()) / 1000;
+  if (s < 90) return "just now";
+  if (s < 5400) return Math.round(s / 60) + " min ago";
+  if (s < 129600) return Math.round(s / 3600) + " h ago";
+  return Math.round(s / 86400) + " d ago";
+}
+/* owner/repo -> live health, straight from api.github.com (CORS-enabled) */
+async function githubDirect(repo) {
+  var meta = await ghApi("/repos/" + repo);
+  var extras = await Promise.allSettled([
+    ghApi("/search/issues?q=" + encodeURIComponent("repo:" + repo + " is:pr is:open") + "&per_page=1"),
+    ghApi("/repos/" + repo + "/actions/runs?per_page=1&branch=" + encodeURIComponent(meta.default_branch || "")),
+    ghApi("/repos/" + repo + "/releases/latest")
+  ]);
+  var prs = extras[0].status === "fulfilled" ? extras[0].value.total_count : null;
+  var run = extras[1].status === "fulfilled" && extras[1].value.workflow_runs && extras[1].value.workflow_runs[0] || null;
+  var rel = extras[2].status === "fulfilled" ? extras[2].value.tag_name : null;
+  var ci = run ? (run.status === "completed" ? (run.conclusion || "—") : run.status) : "—";
+  return {
+    repo: meta.full_name, branch: meta.default_branch,
+    stars: meta.stargazers_count, forks: meta.forks_count,
+    openPRs: prs, openIssues: prs != null ? Math.max(0, meta.open_issues_count - prs) : meta.open_issues_count,
+    ci: ci, ciRun: run ? run.name : null, lastPush: meta.pushed_at, lastRelease: rel
+  };
+}
+function ghRowsFrom(d) {
+  var rows = [["Repo", d.repo], ["Default branch", d.branch || "—"],
+    ["Stars", (d.stars != null ? d.stars.toLocaleString() : "—")],
+    ["Forks", (d.forks != null ? d.forks.toLocaleString() : "—")],
+    ["Open PRs", (d.openPRs != null ? d.openPRs.toLocaleString() : "—")],
+    ["Open issues", (d.openIssues != null ? d.openIssues.toLocaleString() : "—")]];
+  if (d.ci) rows.push(["CI (" + (d.ciRun || "latest run") + ")", d.ci]);
+  if (d.lastPush) rows.push(["Last push", nxAgo(d.lastPush)]);
+  rows.push(["Last release", d.lastRelease || "—"]);
+  return rows;
+}
+function liveCard(title, rows, badge) {
+  var b = badge === "sample" ? "sample" : (badge || "live");
+  return '<div class="card"><div style="display:flex;align-items:center;gap:8px"><h3>' + title +
+    '</h3><span class="chip" style="margin-left:auto">' + b + '</span></div>' +
+    rows.map(function (r) { return '<div class="cat-row"><span class="cn" style="width:160px">' + r[0] +
+      '</span><span style="color:var(--ink);font-weight:600">' + r[1] + '</span></div>'; }).join("") + '</div>';
+}
+function sloCardSample(svc) {
+  return liveCard("Service SLO", [["Service", svc], ["Availability", "99.95%"], ["Firing monitors", "0"], ["Active incidents", "0"]], "sample");
+}
+async function loadLiveSignals() {
+  var wrap = document.getElementById("liveSignals"); if (!wrap) return;
+  var srcEl = document.getElementById("liveSource");
+  var repoEl = document.getElementById("liveRepo");
+  if (repoEl && !repoEl.value) repoEl.value = NEXION_REPO;
+  var repo = ((repoEl && repoEl.value) || NEXION_REPO).trim();
+  var svc = (document.getElementById("liveSvc").value || "web").trim();
+
+  if (window.NEXION_API_BASE) {
+    wrap.innerHTML = '<div class="card">Loading…</div>';
+    var gh = await nxFetch("/api/nexion/repo/" + repo + "/health");
+    var slo = await nxFetch("/api/nexion/service/" + encodeURIComponent(svc) + "/slo");
+    var bRows = (gh && !gh.__error)
+      ? [["Repo", gh.repo], ["CI status", gh.ciStatus], ["Open PRs", gh.openPullRequests], ["Open issues", gh.openIssues], ["Last release", gh.lastRelease || "—"]]
+      : [["Repo", repo], ["Error", (gh && gh.__error) || "unreachable"]];
+    var sloRows = (slo && !slo.__error)
+      ? [["Service", slo.service], ["Availability", slo.availability != null ? slo.availability + "%" : "—"], ["Firing monitors", slo.openMonitors], ["Active incidents", slo.activeIncidents]]
+      : [["Service", svc], ["Error", (slo && slo.__error) || "unreachable"]];
+    wrap.innerHTML = liveCard("Repository health", bRows, (gh && gh.source) || "—") +
+                     liveCard("Service SLO", sloRows, (slo && slo.source) || "—");
+    srcEl.textContent = "Backend: " + window.NEXION_API_BASE + " · GitHub source: " + ((gh && gh.source) || "—") +
+                        " · Datadog source: " + ((slo && slo.source) || "—");
+    return;
+  }
+
+  /* No backend: render embedded snapshot instantly, then replace with a live pull from api.github.com */
+  var snap = NEXION_SNAPSHOT;
+  if (repo === snap.repo) {
+    wrap.innerHTML = liveCard("Repository health", ghRowsFrom({
+      repo: snap.repo, branch: snap.defaultBranch, stars: snap.stars, forks: snap.forks,
+      openPRs: snap.openPRs, openIssues: snap.openIssuesInclPRs - snap.openPRs, lastPush: snap.lastPush
+    }), "snapshot") + sloCardSample(svc);
+    srcEl.textContent = "Snapshot from " + snap.fetchedAt + " — refreshing live from api.github.com…";
+  } else {
+    wrap.innerHTML = '<div class="card">Pulling live data from api.github.com…</div>';
+    srcEl.textContent = "Contacting api.github.com…";
+  }
+  try {
+    var live, note = "";
+    try {
+      live = await githubDirect(repo);
+    } catch (e0) {
+      if (e0 && e0.status === 404 && repo === NEXION_REPO && NEXION_REPO_FALLBACK && NEXION_REPO_FALLBACK !== repo) {
+        live = await githubDirect(NEXION_REPO_FALLBACK);
+        note = " · " + NEXION_REPO + " isn't visible to the public API (private, or not created yet — if private, set window.NEXION_GITHUB_TOKEN); showing " + NEXION_REPO_FALLBACK + " instead.";
+      } else { throw e0; }
+    }
+    wrap.innerHTML = liveCard("Repository health", ghRowsFrom(live), "live") + sloCardSample(svc);
+    srcEl.textContent = "Live from api.github.com (" + (window.NEXION_GITHUB_TOKEN ? "authenticated" : "unauthenticated, public repos") + ")" + note +
+      " · SLO card is sample until a backend with Datadog is deployed (set window.NEXION_API_BASE).";
+  } catch (e) {
+    var why = e && e.status === 403 ? "rate-limited (60 req/h unauthenticated — set window.NEXION_GITHUB_TOKEN to raise)"
+            : e && e.status === 404 ? "repo not found (private repos need window.NEXION_GITHUB_TOKEN)"
+            : String((e && e.message) || e);
+    if (repo !== snap.repo) {
+      wrap.innerHTML = liveCard("Repository health", [["Repo", repo], ["Error", why]], "error") + sloCardSample(svc);
+    }
+    srcEl.textContent = "Live pull failed: " + why + (repo === snap.repo ? " — showing embedded snapshot from " + snap.fetchedAt + "." : "");
+  }
+}
+if (document.getElementById("liveSignals")) {
+  loadLiveSignals();
+  /* keep it live without hammering the unauthenticated rate limit */
+  setInterval(function () { if (!document.hidden) loadLiveSignals(); }, 300000);
+}
+
+/* ---- JS-driven hero background animation ----
+   Drives the Ken Burns / glow / light-sweep via requestAnimationFrame with inline
+   styles, so motion shows even when the OS/webview sets prefers-reduced-motion. */
+(function () {
+  var img = document.querySelector(".hero-bg .hb-img");
+  var fx = document.querySelector(".hero-bg .hb-fx");
+  var sweep = document.querySelector(".hero-bg .hb-sweep");
+  if (!img || !fx || !sweep || !window.requestAnimationFrame) return;
+  [img, fx, sweep].forEach(function (el) { el.style.animation = "none"; });
+  function pingpong(t, period) { var x = (t % (2 * period)) / period; return x < 1 ? x : 2 - x; }
+  function ease(x) { return x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2; }
+  var t0 = null;
+  function frame(now) {
+    if (t0 === null) t0 = now;
+    var t = (now - t0) / 1000;
+    var k = ease(pingpong(t, 30));   /* Ken Burns: 30s there-and-back */
+    img.style.transform = "scale(" + (1 + 0.12 * k).toFixed(4) + ") translate(" + (-2 * k).toFixed(3) + "%," + (-1.4 * k).toFixed(3) + "%)";
+    var g = ease(pingpong(t, 9));    /* neon glow: 9s breathe */
+    fx.style.opacity = (0.34 + 0.28 * g).toFixed(3);
+    fx.style.transform = "translateX(" + (2.5 * g).toFixed(3) + "%)";
+    var s = (t % 11) / 11;           /* light sweep: 11s loop */
+    sweep.style.backgroundPosition = (130 - 160 * s).toFixed(2) + "% 0";
+    window.requestAnimationFrame(frame);
+  }
+  window.requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
