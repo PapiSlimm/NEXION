@@ -3,7 +3,7 @@
 {
   "name": "Nexion V12 Os",
   "schemaVersion": 1,
-  "description": "NEXION — V12 Enterprise Intelligence OS: interactive app with NEXION/ORION/AEGIS domains, Public/Private mode gating, production readiness assessment console, decision pipeline simulator, and permissions & standards explorer. Fully self-contained; all data defined in the page.",
+  "description": "NEXION — V12 Enterprise Intelligence OS: interactive app with NEXION/FORGE VECTOR/AEGIS domains, Public/Private mode gating, production readiness assessment console, decision pipeline simulator, and permissions & standards explorer. Fully self-contained; all data defined in the page.",
   "mcpTools": [],
   "mcpServerNames": []
 }
@@ -476,7 +476,7 @@
     <span class="hero-badge"><span class="dot"></span> V12 Enterprise Intelligence OS</span>
     <h1>Three intelligences.<br><span class="grad-text">One operating framework.</span></h1>
     <p class="sub">
-      NEXION, ORION, and AEGIS are not three chatbots — they are three enterprise intelligence
+      NEXION, FORGE VECTOR, and AEGIS are not three chatbots — they are three enterprise intelligence
       domains with defined scopes, permissions, and outputs. Strategy imagines, engineering builds,
       governance safeguards, and accountable humans decide.
     </p>
@@ -497,7 +497,7 @@
       </div>
       <div class="card intel-card or" onclick="go('orion')">
         <span class="tag or">Strategy</span>
-        <div class="intel-title">ORION</div>
+        <div class="intel-title">FORGE VECTOR</div>
         <div class="intel-role">Chief Strategic Intelligence &amp; Future Development Platform</div>
         <p style="font-size:13px;color:var(--ink-2)">Guides long-term direction: markets, innovation, expansion, competitive positioning, and executive decision support.</p>
         <div class="intel-q">"Should we build this — and where does it take us?"</div>
@@ -547,7 +547,7 @@
       <p style="font-size:14px;color:var(--ink-2)">Ask the ecosystem: <b style="color:var(--ink)">"Build me an AI factory."</b></p>
       <div class="grid g3" style="margin-top:14px">
         <div>
-          <span class="tag or">ORION answers</span>
+          <span class="tag or">FORGE VECTOR answers</span>
           <ul style="margin:10px 0 0 18px;font-size:13px;color:var(--ink-2)">
             <li>Should we build it?</li><li>What industries need it?</li><li>How do we monetize it?</li>
             <li>Who competes with us?</li><li>What if demand shifts?</li>
@@ -764,7 +764,7 @@
   <div class="fbar">
     <span><b style="color:var(--ink-2)">V12 Multimedia</b> — Enterprise Intelligence Frameworks</span>
     <span>NEXION · Engineering</span>
-    <span>ORION · Strategy</span>
+    <span>FORGE VECTOR · Strategy</span>
     <span>AEGIS · Governance</span>
     <span style="margin-left:auto">Recommendations inform decisions; accountable humans make them.</span>
   </div>
@@ -781,7 +781,7 @@ const ROLE_LABEL = { public: "Public User", enterprise: "Enterprise Customer", s
 
 /* ================= NAV ================= */
 const NAV = [
-  ["overview", "Overview"], ["nexion", "NEXION"], ["orion", "ORION"], ["aegis", "AEGIS"],
+  ["overview", "Overview"], ["nexion", "NEXION"], ["orion", "FORGE VECTOR"], ["aegis", "AEGIS"],
   ["assess", "Assessment Console"], ["pipeline", "Decision Pipeline"], ["framework", "Operating Framework"], ["access", "Access & Standards"]
 ];
 function renderNav() {
@@ -892,8 +892,8 @@ const INTEL = {
   },
   orion: {
     cls: "or", color: "var(--orion)", tag: "Strategy",
-    name: "ORION", title: "Chief Strategic Intelligence & Future Development Platform",
-    mission: "ORION guides the long-term direction of the organization. Where NEXION asks \"Can we build this?\", ORION asks \"Should we build this?\" — imagine, challenge, forecast, innovate, guide, expand.",
+    name: "FORGE VECTOR", title: "Chief Strategic Intelligence & Future Development Platform",
+    mission: "FORGE VECTOR guides the long-term direction of the organization. Where NEXION asks \"Can we build this?\", FORGE VECTOR asks \"Should we build this?\" — imagine, challenge, forecast, innovate, guide, expand.",
     objective: "Turn opportunity into strategy, and strategy into accountable business proposals.",
     philosophy: "Every recommendation answers: why this opportunity matters, the strategic advantages, the risks, the expected outcomes, the long-term sustainability, and the competitive positioning.",
     questions: ["Where should we go?", "What industries are next?", "What opportunities exist?", "How do we become larger?", "Should we enter this market?", "How could competitors react?", "What does the future look like?"],
@@ -904,9 +904,9 @@ const INTEL = {
       ["Corporate Development", ["Expansion Planning", "Partnerships", "Pricing Strategy", "Monetization", "Acquisition Evaluation"]],
       ["Executive Support", ["Executive Planning", "Decision Support", "Risk-Adjusted Growth Models", "Portfolio Strategy"]]
     ],
-    publicDesc: "In Public Mode, ORION is an executive advisory platform for external clients.",
+    publicDesc: "In Public Mode, FORGE VECTOR is an executive advisory platform for external clients.",
     publicItems: ["Executive Advisory Platform", "Innovation Consulting", "Strategic Workshops", "Market Analysis", "Business Transformation", "Leadership Education", "Growth Planning", "Corporate Roadmapping"],
-    privateDesc: "Internally, ORION analyzes approved business information — scoped by role and audited, never a private channel around governance.",
+    privateDesc: "Internally, FORGE VECTOR analyzes approved business information — scoped by role and audited, never a private channel around governance.",
     privateItems: ["Financial forecasting", "Market intelligence", "Growth initiatives", "Strategic planning", "Competitive analyses", "Executive dashboards", "Product portfolios", "Investment opportunities", "Acquisition evaluations", "Confidential planning"],
     outputs: ["Business cases", "Strategic roadmaps", "Industry forecasts", "SWOT analyses", "Competitive assessments", "Pricing recommendations", "Expansion strategies", "Innovation portfolios", "Executive briefings", "Scenario planning", "Risk-adjusted growth models"],
     cta: ["pipeline", "See how strategy enters the Decision Pipeline →"]
@@ -914,9 +914,9 @@ const INTEL = {
   aegis: {
     cls: "ae", color: "#2cc08e", tag: "Governance",
     name: "AEGIS", title: "Chief Governance, Integrity & Assurance Platform",
-    mission: "AEGIS provides independent governance and oversight across the V12 ecosystem. Its job is to disagree with both NEXION and ORION when necessary — ensuring strategy and engineering remain aligned with policy, legal obligations, security requirements, and accountable decision-making.",
+    mission: "AEGIS provides independent governance and oversight across the V12 ecosystem. Its job is to disagree with both NEXION and FORGE VECTOR when necessary — ensuring strategy and engineering remain aligned with policy, legal obligations, security requirements, and accountable decision-making.",
     objective: "Verify that initiatives are compliant, explainable, auditable, and appropriately governed before major decisions or deployments proceed.",
-    philosophy: "Healthy separation of powers: strategy (ORION), execution (NEXION), oversight (AEGIS). No recommendation becomes a decision without evidence, approval, and an audit trail.",
+    philosophy: "Healthy separation of powers: strategy (FORGE VECTOR), execution (NEXION), oversight (AEGIS). No recommendation becomes a decision without evidence, approval, and an audit trail.",
     questions: ["Does this comply with policy?", "Can this decision be audited?", "Who approved this change?", "What legal obligations apply?", "Have security requirements been satisfied?", "Is customer data adequately protected?", "Are governance controls documented?"],
     domains: [
       ["Policy & Compliance", ["Policy Enforcement", "Regulatory Compliance", "Constitutional Compliance", "Compliance Evidence"]],
@@ -1171,22 +1171,22 @@ function copyReport(btn) {
 /* ================= PIPELINE ================= */
 const STAGES = [
   ["Opportunity", "", "A market signal, idea, or need enters the system.", "Anyone can raise an opportunity. It is logged with an owner and a hypothesis before any analysis begins."],
-  ["ORION — Strategy & Vision", "or", "Market fit, competitive position, monetization, risk.", "ORION produces a business case: why it matters, strategic advantages, expected outcomes, and risk-adjusted scenarios. A recommendation — never a decision."],
+  ["FORGE VECTOR — Strategy & Vision", "or", "Market fit, competitive position, monetization, risk.", "FORGE VECTOR produces a business case: why it matters, strategic advantages, expected outcomes, and risk-adjusted scenarios. A recommendation — never a decision."],
   ["Business Proposal", "", "Strategy crystallized into a reviewable artifact.", "Standardized format: objectives, evidence references, confidence score, success criteria, and required investment."],
   ["NEXION — Engineering & Delivery", "nx", "Architecture, feasibility, cost, security, readiness.", "NEXION validates technical feasibility and produces the delivery plan: architecture, infrastructure, security assessment, capacity analysis, and effort estimate."],
   ["Technical Validation", "", "Evidence that the plan will survive production.", "Prototypes, load tests, threat models, and a production readiness score from the Assessment Console."],
   ["AEGIS — Governance & Assurance", "ae", "Compliance, legal, audit, and policy review.", "AEGIS independently verifies policy compliance, legal obligations, data protection, and auditability. AEGIS can escalate or object — and its objection is recorded."],
-  ["Executive Review", "", "Accountable humans weigh all three perspectives.", "Executives review ORION's case, NEXION's plan, and AEGIS's assurance verdict. Conflicting recommendations are expected — the resolution and rationale are documented in a decision record."],
+  ["Executive Review", "", "Accountable humans weigh all three perspectives.", "Executives review FORGE VECTOR's case, NEXION's plan, and AEGIS's assurance verdict. Conflicting recommendations are expected — the resolution and rationale are documented in a decision record."],
   ["Approved Initiative", "", "A decision with an owner, budget, and audit trail.", "The decision record captures who approved, on what evidence, and against which success criteria — so future teams understand why, not just who."],
   ["Implementation", "", "NEXION-governed delivery through CI/CD.", "Built under secure SDLC, deployed via automated pipelines with canary rollout and rollback plans."],
-  ["Continuous Monitoring", "", "SLOs, error budgets, security telemetry, KPIs.", "NEXION watches reliability and cost; ORION watches market outcomes; AEGIS watches control effectiveness."],
+  ["Continuous Monitoring", "", "SLOs, error budgets, security telemetry, KPIs.", "NEXION watches reliability and cost; FORGE VECTOR watches market outcomes; AEGIS watches control effectiveness."],
   ["Continuous Improvement", "", "Findings feed back into the next opportunity.", "Post-incident reviews, KPI deltas, and audit findings become new opportunities — the loop closes."]
 ];
 function renderPipe() {
   document.getElementById("pipeRoot").innerHTML = STAGES.map(([t, cls, d, detail], i) => `
     ${i > 0 ? '<div class="pconn"></div>' : ""}
     <div class="pstage" id="ps-${i}" onclick="this.classList.toggle('open')">
-      <div class="pt"><span class="pnum">${i + 1}</span> ${t} ${cls ? `<span class="tag ${cls}">${cls === "nx" ? "NEXION" : cls === "or" ? "ORION" : "AEGIS"}</span>` : ""}</div>
+      <div class="pt"><span class="pnum">${i + 1}</span> ${t} ${cls ? `<span class="tag ${cls}">${cls === "nx" ? "NEXION" : cls === "or" ? "FORGE VECTOR" : "AEGIS"}</span>` : ""}</div>
       <div class="pd">${d}</div>
       <div class="pdetail">${detail}</div>
     </div>`).join("");
@@ -1221,7 +1221,7 @@ const PERMS = [
   ["Private APIs & workflow automation", 0, 1, 1, 1],
   ["Agent marketplace & advanced analytics", 0, 1, 1, 1],
   ["Dedicated infrastructure & compliance tools", 0, 1, 1, 1],
-  ["Internal AI (NEXION / ORION / AEGIS private mode)", 0, 0, 2, 2],
+  ["Internal AI (NEXION / FORGE VECTOR / AEGIS private mode)", 0, 0, 2, 2],
   ["Internal logs, monitoring & workflows", 0, 0, 2, 2],
   ["Departmental systems (eng / sec / finance / ops)", 0, 0, 2, 1],
   ["Security oversight & AI governance", 0, 0, 0, 1],
@@ -1245,7 +1245,7 @@ const PRINCIPLES = [
   ["Just-in-time privileged access", "Elevated access is granted per task, time-boxed, and auto-revoked."],
   ["Immutable audit logs", "Every privileged action by a human or an AI domain is recorded and tamper-evident."],
   ["Separation of duties", "No single role — and no AI domain — can propose, approve, and deploy the same change."],
-  ["Least privilege by default", "NEXION, ORION, and AEGIS see only what policy grants. \"Unrestricted access\" does not exist in this architecture."]
+  ["Least privilege by default", "NEXION, FORGE VECTOR, and AEGIS see only what policy grants. \"Unrestricted access\" does not exist in this architecture."]
 ];
 function renderPrinciples() {
   document.getElementById("principles").innerHTML = PRINCIPLES.map(([t, d]) => `
@@ -1294,7 +1294,7 @@ function updateStdMeter() {
 const PILLARS = [
   ["Governance artifacts", "Typed, versioned templates for every recommendation and decision — ADRs, decision records, assurance verdicts — with owners and retention.", "artifactTable"],
   ["Decision workflows", "Named workflows with steps, approvers, and SLAs for initiative approval, production change, and exceptions.", "workflowCards"],
-  ["Service contracts between domains", "Explicit input/output contracts for every ORION ↔ NEXION ↔ AEGIS handoff, with quality gates.", "contractCards"],
+  ["Service contracts between domains", "Explicit input/output contracts for every FORGE VECTOR ↔ NEXION ↔ AEGIS handoff, with quality gates.", "contractCards"],
   ["Lifecycle management", "One authoritative lifecycle state per initiative, with entry and exit criteria for each state.", "lifecycleStrip"],
   ["KPIs", "Measurable indicators per domain, reviewed on a cadence, tied to error budgets and business outcomes.", "kpiTable"],
   ["AI evaluation procedures", "Scheduled evaluation, monitoring, explainability, and human-oversight controls for each intelligence domain.", "aiEvalTable"],
@@ -1325,8 +1325,8 @@ function togglePillar(i, on) {
 
 const ARTIFACTS = [
   ["Architecture Decision Record (ADR)", "NEXION", "Engineering lead", "Permanent", "ADR-NNN · Title\nStatus: Proposed | Accepted | Superseded\nContext: What forces are at play?\nDecision: What we chose.\nConsequences: What becomes easier / harder.\nAlternatives considered: With reasons rejected.\nEvidence: Benchmarks, prototypes, references."],
-  ["Decision Record", "Executive Review", "Accountable executive", "Permanent", "DR-NNN · Initiative\nInputs: ORION business case, NEXION validation, AEGIS verdict\nConflicts raised: Documented disagreements between domains\nResolution rationale: Why this path was chosen\nApprover: Name, role, date\nSuccess criteria: Measurable, time-bound\nReview date: When we check if it worked."],
-  ["Business Case", "ORION", "Strategy lead", "7 years", "BC-NNN · Opportunity\nWhy it matters · Strategic advantages · Risks\nExpected outcomes with confidence score\nScenario models: base / upside / downside\nEvidence references: market data, research"],
+  ["Decision Record", "Executive Review", "Accountable executive", "Permanent", "DR-NNN · Initiative\nInputs: FORGE VECTOR business case, NEXION validation, AEGIS verdict\nConflicts raised: Documented disagreements between domains\nResolution rationale: Why this path was chosen\nApprover: Name, role, date\nSuccess criteria: Measurable, time-bound\nReview date: When we check if it worked."],
+  ["Business Case", "FORGE VECTOR", "Strategy lead", "7 years", "BC-NNN · Opportunity\nWhy it matters · Strategic advantages · Risks\nExpected outcomes with confidence score\nScenario models: base / upside / downside\nEvidence references: market data, research"],
   ["Production Readiness Report", "NEXION", "Engineering lead", "Life of system", "PRR-NNN · System\nScore per category (scalability, security, reliability, observability, delivery, governance)\nGap list with severities · Load test evidence\nGo / conditional / no-go recommendation"],
   ["Assurance Verdict", "AEGIS", "Governance lead", "Permanent", "AV-NNN · Initiative\nPolicies evaluated · Compliance result per policy\nLegal obligations · Data protection assessment\nObjections (if any) — recorded even when overridden\nAudit trail reference"],
   ["Risk Register Entry", "AEGIS", "Risk owner", "Until retired + 3y", "RR-NNN · Risk\nDescription · Likelihood · Impact · Owner\nMitigation plan with dates · Residual risk\nEscalation threshold"],
@@ -1349,7 +1349,7 @@ function showTpl(i) {
 
 const WORKFLOWS = [
   ["Initiative Approval", "New products, markets, or major systems", [
-    "ORION files Business Case (BC)", "NEXION attaches Production Readiness assessment", "AEGIS issues Assurance Verdict",
+    "FORGE VECTOR files Business Case (BC)", "NEXION attaches Production Readiness assessment", "AEGIS issues Assurance Verdict",
     "Executive Review resolves conflicts", "Decision Record signed & published", "Initiative enters lifecycle at Approved"
   ], "SLA: 15 business days end-to-end · Quorum: 2+ executives · All three domain artifacts mandatory"],
   ["Production Change", "Any change to production systems", [
@@ -1373,7 +1373,7 @@ function renderWorkflows() {
 }
 
 const CONTRACTS = [
-  ["ORION → NEXION", "or", "nx", "Proposal Handoff",
+  ["FORGE VECTOR → NEXION", "or", "nx", "Proposal Handoff",
     ["Business case (BC)", "Success criteria", "Budget envelope", "Target timeline"],
     ["Feasibility verdict", "Architecture options with tradeoffs", "Effort & cost estimate", "Readiness gaps"],
     "Response within 10 business days · Quality gate: every option carries evidence, risk, and maintainability notes"],
@@ -1384,8 +1384,8 @@ const CONTRACTS = [
   ["AEGIS → Executive Review", "ae", "", "Assurance Delivery",
     ["Assurance verdict", "Risk register deltas", "Open exceptions", "Audit trail references"],
     ["Decision record", "Conflict resolutions", "Conditions of approval", "Review date"],
-    "Escalation path: AEGIS objections cannot be closed by ORION or NEXION — only by accountable executives, in writing"],
-  ["NEXION → ORION", "nx", "or", "Delivery Feedback",
+    "Escalation path: AEGIS objections cannot be closed by FORGE VECTOR or NEXION — only by accountable executives, in writing"],
+  ["NEXION → FORGE VECTOR", "nx", "or", "Delivery Feedback",
     ["Actual cost & timeline vs. estimate", "SLO performance", "Incident summaries", "Technical debt register"],
     ["Updated forecasts", "Strategy adjustments", "Reprioritized portfolio", "New opportunities"],
     "Cadence: monthly · Quality gate: KPI deltas quantified, not narrated"]
@@ -1408,7 +1408,7 @@ function renderContracts() {
 
 const LIFECYCLE = [
   ["Draft", "Opportunity logged with an owner and hypothesis.", "Exit: business case accepted for analysis."],
-  ["Proposed", "ORION business case complete with confidence score.", "Exit: NEXION engaged under the Proposal Handoff contract."],
+  ["Proposed", "FORGE VECTOR business case complete with confidence score.", "Exit: NEXION engaged under the Proposal Handoff contract."],
   ["Validated", "NEXION technical validation and readiness report done.", "Exit: validation package delivered to AEGIS."],
   ["Assured", "AEGIS assurance verdict issued; objections recorded.", "Exit: package reaches Executive Review."],
   ["Approved", "Decision record signed by accountable executives.", "Exit: funded team and delivery plan in place."],
@@ -1439,7 +1439,7 @@ const KPIS = [
     ["Mean time to recovery", "< 1 hour, P1 incidents", "Monthly"],
     ["Infra cost vs. plan", "± 10% of FinOps forecast", "Monthly"]
   ]],
-  ["ORION", "or", [
+  ["FORGE VECTOR", "or", [
     ["Forecast accuracy", "± 15% at 2 quarters", "Quarterly"],
     ["Initiative hit rate", "≥ 60% meet success criteria", "Quarterly"],
     ["Time opportunity → decision", "≤ 20 business days", "Monthly"],
@@ -1489,7 +1489,7 @@ const PLAYBOOKS = [
     "File expedited change record retroactively within 24 hours"
   ]],
   ["Domain Conflict Resolution", "ae", [
-    "Conflicting recommendations (e.g., ORION says go, NEXION says not ready) are documented side-by-side — never negotiated away privately",
+    "Conflicting recommendations (e.g., FORGE VECTOR says go, NEXION says not ready) are documented side-by-side — never negotiated away privately",
     "Each domain states its evidence, confidence, and what would change its position",
     "AEGIS verifies process compliance, not the winner",
     "Accountable executive decides within the workflow SLA; rationale recorded in the decision record",
