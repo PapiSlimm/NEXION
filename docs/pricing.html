@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NEXION — Pricing &amp; Partner Program</title>
+<style>
+  :root{
+    --page:#07070b; --surface:rgba(255,255,255,0.028); --surface-2:rgba(255,255,255,0.05);
+    --surface-3:rgba(255,255,255,0.08); --ink:#f5f4f9; --ink-2:#bdbccb; --muted:#83828f;
+    --border:rgba(255,255,255,0.09); --border-2:rgba(255,255,255,0.15);
+    --nexion:#5b9bf5; --orion:#9d8cf2; --aegis:#24c48d; --warning:#ffb020;
+    --grad:linear-gradient(120deg,#a78bfa 0%,#6aa5f7 55%,#57c7ee 100%);
+    --grad-2:linear-gradient(135deg,#9d8cf2 0%,#5b9bf5 100%);
+    --radius:16px; --radius-lg:24px;
+    --font:system-ui,-apple-system,"Segoe UI",sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--page);color:var(--ink);font-family:var(--font);line-height:1.5;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 24px 80px}
+  .kicker{display:inline-block;font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);font-weight:700}
+  h1{font-size:clamp(34px,5.5vw,56px);letter-spacing:-.03em;margin:14px 0 10px}
+  h2{font-size:clamp(24px,3.4vw,34px);letter-spacing:-.02em;margin:10px 0 6px}
+  h3{font-size:17px;margin:0}
+  .grad-text{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .sub{color:var(--ink-2);max-width:62ch;font-size:15px}
+  .hero{text-align:center;padding:64px 0 30px;position:relative}
+  .hero .sub{margin:0 auto}
+  .hero-badge{display:inline-flex;align-items:center;gap:8px;font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--ink-2);border:1px solid var(--border-2);border-radius:999px;padding:7px 16px;background:var(--surface-2)}
+  .hero-badge .dot{width:7px;height:7px;border-radius:50%;background:var(--aegis);box-shadow:0 0 12px var(--aegis)}
+  .glow{position:absolute;inset:-40px 0 auto;height:340px;pointer-events:none;z-index:-1;
+    background:radial-gradient(46% 60% at 30% 20%,rgba(120,110,240,.16),transparent 65%),
+               radial-gradient(44% 60% at 72% 26%,rgba(70,180,240,.13),transparent 65%)}
+  .section-head{margin:66px 0 22px}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:22px}
+  .chip{display:inline-block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);
+    border:1px solid var(--border-2);border-radius:999px;padding:3px 10px;background:var(--surface-2)}
+  /* billing toggle */
+  .toggle-row{display:flex;justify-content:center;align-items:center;gap:14px;margin:30px 0 8px;font-size:14px;color:var(--ink-2)}
+  .switch{width:52px;height:28px;border-radius:999px;background:var(--surface-3);border:1px solid var(--border-2);
+    position:relative;cursor:pointer;transition:background .2s}
+  .switch.on{background:var(--grad-2)}
+  .switch .knob{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:left .2s}
+  .switch.on .knob{left:27px}
+  .save-chip{color:var(--aegis);border-color:rgba(36,196,141,.4)}
+  /* tiers */
+  .tiers{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-top:24px}
+  @media(max-width:1050px){.tiers{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:560px){.tiers{grid-template-columns:1fr}}
+  .tier{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--border);
+    border-radius:var(--radius-lg);padding:24px 20px;position:relative}
+  .tier.popular{border:1px solid transparent;background:
+    linear-gradient(var(--page),var(--page)) padding-box, var(--grad-2) border-box}
+  .tier .pop-badge{position:absolute;top:-11px;left:50%;transform:translateX(-50%);font-size:10px;letter-spacing:.14em;
+    text-transform:uppercase;font-weight:700;color:#0b0b12;background:var(--grad);border-radius:999px;padding:4px 12px;white-space:nowrap}
+  .tier .t-name{font-size:15px;font-weight:700}
+  .tier .t-for{font-size:12px;color:var(--muted);margin-top:2px;min-height:32px}
+  .price{margin:14px 0 2px;font-size:34px;font-weight:700;letter-spacing:-.02em}
+  .price .cur{font-size:18px;vertical-align:top;margin-right:1px}
+  .price .per{font-size:12px;color:var(--muted);font-weight:500;letter-spacing:0}
+  .annual-note{font-size:11.5px;color:var(--aegis);min-height:16px}
+  .feat{list-style:none;margin:16px 0 20px;flex:1}
+  .feat li{font-size:13px;color:var(--ink-2);padding:5px 0 5px 22px;position:relative}
+  .feat li::before{content:"";position:absolute;left:0;top:11px;width:12px;height:12px;border-radius:50%;
+    background:radial-gradient(circle at 35% 35%,rgba(255,255,255,.9),transparent 40%),var(--grad-2);opacity:.85}
+  .feat li.dim{color:var(--muted)}
+  .feat li.dim::before{background:var(--surface-3)}
+  .btn{display:block;text-align:center;border-radius:12px;padding:11px 14px;font-size:14px;font-weight:600;cursor:pointer;
+    border:1px solid var(--border-2);background:var(--surface-2);color:var(--ink);text-decoration:none}
+  .btn.primary{background:var(--grad-2);border:none;color:#fff}
+  /* compare table */
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{padding:11px 12px;text-align:center;border-bottom:1px solid var(--border)}
+  th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2)}
+  td:first-child,th:first-child{text-align:left;color:var(--ink-2)}
+  td{color:var(--ink)}
+  .yes{color:var(--aegis)} .no{color:var(--muted)}
+  .tbl-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface)}
+  /* partner */
+  .p-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:24px}
+  @media(max-width:900px){.p-grid{grid-template-columns:1fr}}
+  .p-tier{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:26px 22px;display:flex;flex-direction:column}
+  .p-tier.hot{border:1px solid transparent;background:linear-gradient(var(--page),var(--page)) padding-box,
+    linear-gradient(135deg,#24c48d,#5b9bf5) border-box}
+  .p-rate{font-size:40px;font-weight:700;letter-spacing:-.02em;margin:12px 0 0}
+  .p-rate small{font-size:13px;color:var(--muted);font-weight:500}
+  .stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:24px}
+  @media(max-width:900px){.stat-row{grid-template-columns:repeat(2,1fr)}}
+  .stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;text-align:center}
+  .stat .v{font-size:26px;font-weight:700}
+  .stat .l{font-size:12px;color:var(--muted);margin-top:4px}
+  /* calculator */
+  .calc{display:grid;grid-template-columns:1.2fr 1fr;gap:24px;align-items:center}
+  @media(max-width:800px){.calc{grid-template-columns:1fr}}
+  input[type=range]{width:100%;accent-color:#7b8ff5}
+  select{background:var(--surface-3);color:var(--ink);border:1px solid var(--border-2);border-radius:10px;padding:8px 10px;font-size:14px}
+  .calc-out{text-align:center;background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:26px}
+  .calc-out .big{font-size:44px;font-weight:700;letter-spacing:-.02em}
+  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:22px}
+  @media(max-width:900px){.steps{grid-template-columns:repeat(2,1fr)}}
+  .step .n{font-size:12px;font-weight:700;color:#0b0b12;background:var(--grad);width:26px;height:26px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;margin-bottom:10px}
+  .fine{font-size:12px;color:var(--muted);margin-top:18px}
+  .divider-quote{text-align:center;margin:70px auto 0;max-width:56ch;color:var(--ink-2);font-size:16px}
+  /* top nav + auth */
+  .topnav{display:flex;align-items:center;gap:18px;padding:16px 0;border-bottom:1px solid var(--border)}
+  .topnav .mark{width:34px;height:34px;border-radius:10px;background:var(--grad-2);display:flex;align-items:center;justify-content:center;font-weight:800;color:#fff}
+  .topnav .brand{font-weight:700;letter-spacing:.02em}
+  .topnav .brand small{display:block;font-size:10.5px;color:var(--muted);font-weight:500;letter-spacing:.08em}
+  .topnav .links{margin-left:auto;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+  .topnav .links a{color:var(--ink-2);text-decoration:none;font-size:13.5px;padding:7px 12px;border-radius:999px}
+  .topnav .links a:hover{color:var(--ink);background:var(--surface-2)}
+  .auth-btn{border:1px solid var(--border-2);background:var(--surface-2);color:var(--ink);font:600 13px var(--font);
+    padding:8px 18px;border-radius:999px;cursor:pointer;white-space:nowrap}
+  .auth-btn.primary{background:var(--grad-2);border:none;color:#fff}
+  .auth-btn.in{border-color:rgba(36,196,141,.45);color:var(--aegis)}
+  .auth-email{font-size:12px;color:var(--ink-2);max-width:170px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .nx-modal-bg{position:fixed;inset:0;background:rgba(4,4,8,.68);display:none;align-items:center;justify-content:center;z-index:200}
+  .nx-modal-bg.open{display:flex}
+  .nx-modal{width:min(92vw,390px);background:#0d0d15;border:1px solid var(--border-2);border-radius:var(--radius-lg);padding:28px}
+  .nx-modal p{font-size:13px;color:var(--muted);margin-top:4px}
+  .nx-modal input{width:100%;background:var(--surface-2);border:1px solid var(--border-2);color:var(--ink);
+    border-radius:10px;padding:11px 13px;font:500 14px var(--font);margin-top:12px;outline:none}
+  .nx-modal input:focus{border-color:var(--nexion)}
+  .nx-modal .err{color:#ff5a5a;font-size:12px;min-height:16px;margin-top:6px}
+  .nx-modal .row{display:flex;gap:10px;margin-top:14px}
+  .nx-modal .row .btn{flex:1}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topnav">
+    <div class="mark">N</div>
+    <div class="brand">NEXION<small>V12 ENTERPRISE INTELLIGENCE OS</small></div>
+    <div class="links">
+      <a href="#tiers">Pricing</a>
+      <a href="#partners">Partners</a>
+      <span id="authEmail" class="auth-email"></span>
+      <button id="authBtn" class="auth-btn" onclick="authClick()">Sign in</button>
+    </div>
+  </div>
+
+  <div class="hero">
+    <div class="glow"></div>
+    <span class="hero-badge"><span class="dot"></span> NEXION · V12 Enterprise Intelligence OS</span>
+    <h1>Simple pricing.<br><span class="grad-text">Serious engineering intelligence.</span></h1>
+    <p class="sub">Production-readiness scoring, live GitHub &amp; observability signals, scored business cases, and audit-ready governance — one platform, five tiers. Every paid plan starts with a 14-day free trial. No credit card for Explorer.</p>
+    <div class="toggle-row">
+      <span>Monthly</span>
+      <div class="switch" id="billSwitch" onclick="toggleBilling()"><div class="knob"></div></div>
+      <span>Annual</span>
+      <span class="chip save-chip">2 months free</span>
+    </div>
+  </div>
+
+  <div class="tiers" id="tiers"></div>
+  <p class="fine">All prices USD. Annual billed upfront. 14-day free trial on all paid tiers.</p>
+
+  <div class="section-head">
+    <span class="kicker">Compare</span>
+    <h2>What each tier unlocks</h2>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>Capability</th><th>Explorer</th><th>Builder</th><th>Team</th><th>Business</th><th>Enterprise</th></tr></thead>
+      <tbody>
+        <tr><td>Seats</td><td>1</td><td>3</td><td>10</td><td>25</td><td>Unlimited</td></tr>
+        <tr><td>Tracked repositories</td><td>1 (public)</td><td>5</td><td>25</td><td>100</td><td>Unlimited</td></tr>
+        <tr><td>Live GitHub signals (PRs, CI, releases)</td><td class="no">Sample</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+        <tr><td>Readiness scoring engine</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+        <tr><td>Datadog SLO &amp; incident signals</td><td class="no">—</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+        <tr><td>ORION scored business cases</td><td class="no">—</td><td class="yes">3 / mo</td><td class="yes">Unlimited</td><td class="yes">Unlimited</td><td class="yes">Unlimited</td></tr>
+        <tr><td>AEGIS assurance verdicts &amp; audit exports</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+        <tr><td>API calls / month</td><td>1,000</td><td>25,000</td><td>150,000</td><td>750,000</td><td>Custom</td></tr>
+        <tr><td>MCP server access (AI-agent integration)</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+        <tr><td>SSO / SAML</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td></tr>
+        <tr><td>Support</td><td>Community</td><td>Email</td><td>Priority email</td><td>Priority + onboarding</td><td>Dedicated CSM, 24/7</td></tr>
+        <tr><td>Uptime SLA</td><td class="no">—</td><td class="no">—</td><td>99.5%</td><td>99.9%</td><td>99.95% + credits</td></tr>
+        <tr><td>Deployment</td><td>Cloud</td><td>Cloud</td><td>Cloud</td><td>Cloud</td><td>Cloud, VPC, or on-prem</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="divider-quote">"Readiness isn't a feeling. It's a score, a signal, and an audit trail."</p>
+
+  <div class="section-head" id="partners">
+    <span class="kicker">NEXION Partner Network</span>
+    <h2>Earn recurring revenue for bringing<br><span class="grad-text">engineering truth to your clients.</span></h2>
+    <p class="sub" style="margin-top:8px">Consultancies, agencies, MSPs, and corporate technology groups already advise teams on delivery and reliability. NEXION turns that advice into a measurable product — and pays you every month your referral stays a customer. Recurring commissions, uncapped, on real B2B contract values.</p>
+  </div>
+
+  <div class="stat-row">
+    <div class="stat"><div class="v grad-text">30%</div><div class="l">top recurring commission rate</div></div>
+    <div class="stat"><div class="v grad-text">12 mo</div><div class="l">commission window (renewals at Strategic)</div></div>
+    <div class="stat"><div class="v grad-text">90 days</div><div class="l">referral attribution cookie</div></div>
+    <div class="stat"><div class="v grad-text">$1,000</div><div class="l">flat bonus per closed Enterprise deal</div></div>
+  </div>
+
+  <div class="p-grid">
+    <div class="p-tier">
+      <span class="chip">Level 1</span>
+      <h3 style="margin-top:12px">Referral Affiliate</h3>
+      <div class="p-rate">20% <small>recurring, first 12 months</small></div>
+      <ul class="feat">
+        <li>Open to any business — instant approval</li>
+        <li>Unique referral link + 90-day cookie</li>
+        <li>Your referrals get 10% off their first year</li>
+        <li>Real-time dashboard: clicks, trials, conversions</li>
+        <li>Payouts monthly, net-30, $50 minimum (Stripe/ACH)</li>
+      </ul>
+      <a class="btn" href="#">Join free</a>
+    </div>
+    <div class="p-tier hot">
+      <span class="chip" style="color:var(--aegis);border-color:rgba(36,196,141,.4)">Level 2 · Most popular</span>
+      <h3 style="margin-top:12px">Solution Partner</h3>
+      <div class="p-rate">25% <small>recurring, first 12 months</small></div>
+      <ul class="feat">
+        <li>For consultancies, agencies &amp; MSPs (3+ active referrals)</li>
+        <li>Everything in Referral Affiliate</li>
+        <li>Co-branded landing pages &amp; marketing kit</li>
+        <li>Listing in the NEXION partner directory</li>
+        <li>Deal registration — protect your pipeline for 90 days</li>
+        <li>Quarterly partner webinars &amp; certification</li>
+      </ul>
+      <a class="btn primary" href="#">Apply</a>
+    </div>
+    <div class="p-tier">
+      <span class="chip">Level 3</span>
+      <h3 style="margin-top:12px">Strategic Partner</h3>
+      <div class="p-rate">30% <small>year one · 15% on renewals, for life</small></div>
+      <ul class="feat">
+        <li>For corporations, resellers &amp; system integrators</li>
+        <li>Everything in Solution Partner</li>
+        <li>Volume licensing discounts up to 25%</li>
+        <li>White-label &amp; co-sell options</li>
+        <li>$1,000 flat bonus on every closed Enterprise contract</li>
+        <li>Dedicated partner manager + quarterly business reviews</li>
+      </ul>
+      <a class="btn" href="#">Talk to us</a>
+    </div>
+  </div>
+
+  <div class="section-head">
+    <span class="kicker">Do the math</span>
+    <h2>What a partnership is worth</h2>
+  </div>
+  <div class="card calc">
+    <div>
+      <label style="font-size:13px;color:var(--ink-2)">Customers you refer</label>
+      <input type="range" id="calcN" min="1" max="50" value="10" oninput="calc()">
+      <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted)"><span>1</span><span id="calcNShow" style="color:var(--ink);font-weight:700;font-size:14px">10</span><span>50</span></div>
+      <div style="margin-top:18px;display:flex;gap:12px;align-items:center;flex-wrap:wrap">
+        <label style="font-size:13px;color:var(--ink-2)">Average plan</label>
+        <select id="calcPlan" onchange="calc()">
+          <option value="29">Builder — $29/mo</option>
+          <option value="99" selected>Team — $99/mo</option>
+          <option value="299">Business — $299/mo</option>
+        </select>
+        <label style="font-size:13px;color:var(--ink-2)">Partner level</label>
+        <select id="calcRate" onchange="calc()">
+          <option value="0.20">Affiliate 20%</option>
+          <option value="0.25" selected>Solution 25%</option>
+          <option value="0.30">Strategic 30%</option>
+        </select>
+      </div>
+    </div>
+    <div class="calc-out">
+      <div style="font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)">Your recurring commission</div>
+      <div class="big grad-text" id="calcOut">$247</div>
+      <div style="font-size:13px;color:var(--ink-2)">per month · <span id="calcYr">$2,970</span> in year one</div>
+    </div>
+  </div>
+
+  <div class="section-head">
+    <span class="kicker">How it works</span>
+    <h2>Four steps to first payout</h2>
+  </div>
+  <div class="steps">
+    <div class="card step"><div class="n">1</div><b>Join</b><p style="font-size:13px;color:var(--ink-2);margin-top:6px">Sign up free, get your referral link and marketing kit the same day.</p></div>
+    <div class="card step"><div class="n">2</div><b>Refer</b><p style="font-size:13px;color:var(--ink-2);margin-top:6px">Share NEXION with clients and teams. 90-day cookie; deal registration protects named accounts.</p></div>
+    <div class="card step"><div class="n">3</div><b>They convert</b><p style="font-size:13px;color:var(--ink-2);margin-top:6px">Your referral starts a paid plan — they save 10% in year one, you start earning immediately.</p></div>
+    <div class="card step"><div class="n">4</div><b>Get paid monthly</b><p style="font-size:13px;color:var(--ink-2);margin-top:6px">Commissions land net-30 via Stripe or ACH, with a live dashboard tracking every dollar.</p></div>
+  </div>
+
+  <div class="nx-modal-bg" id="signinModal" onclick="if(event.target===this)closeSignin()">
+    <div class="nx-modal" role="dialog" aria-modal="true" aria-label="Sign in to NEXION">
+      <h3>Sign in to NEXION</h3>
+      <p>Access your subscription, usage, and partner dashboard.</p>
+      <input id="signinEmail" type="email" placeholder="you@company.com" autocomplete="email"
+             onkeydown="if(event.key==='Enter')doSignin()">
+      <div class="err" id="signinErr"></div>
+      <div class="row">
+        <button class="btn" onclick="closeSignin()">Cancel</button>
+        <button class="btn primary" onclick="doSignin()">Sign in</button>
+      </div>
+    </div>
+  </div>
+
+  <p class="fine">Program terms (summary): commissions accrue on collected revenue, excluding taxes and refunds. Self-referrals and coupon-bidding excluded. 90-day last-touch attribution; deal registration overrides at Solution level and above. Enterprise bonus paid on contracts ≥ $12,000/yr after the customer's first paid invoice. Per V12 ecosystem policy, all white-label commissions are referred to V12 Multimedia / CEOS / SonicStream. Rates and terms subject to the Partner Agreement.</p>
+
+</div>
+
+<script>
+"use strict";
+var TIERS = [
+  { name:"Explorer", tag:"Solo devs kicking the tires", m:0, feats:[
+    "1 seat · 1 public repo","Readiness scoring engine","Sample live-signal data","Community support"], dim:["No live GitHub signals"], cta:"Start free", pop:false },
+  { name:"Builder", tag:"Indie builders & early startups", m:29, feats:[
+    "3 seats · 5 repos","Live GitHub signals (PRs, CI, releases)","MCP server access","3 ORION business cases / mo","Email support"], dim:[], cta:"Start 14-day trial", pop:false },
+  { name:"Team", tag:"Engineering teams shipping weekly", m:99, feats:[
+    "10 seats · 25 repos","Everything in Builder","Datadog SLO & incident signals","Unlimited ORION business cases","99.5% SLA · priority support"], dim:[], cta:"Start 14-day trial", pop:true },
+  { name:"Business", tag:"Multi-team orgs with compliance needs", m:299, feats:[
+    "25 seats · 100 repos","Everything in Team","AEGIS audit-ready exports","SSO / SAML","99.9% SLA + onboarding"], dim:[], cta:"Start 14-day trial", pop:false },
+  { name:"Enterprise", tag:"Corporations & regulated industries", m:null, feats:[
+    "Unlimited seats & repos","Everything in Business","VPC or on-prem deployment","Custom integrations & data residency","Dedicated CSM · 24/7 · 99.95% SLA"], dim:[], cta:"Contact sales", pop:false }
+];
+var annual = false;
+function money(n){ return "$" + n.toLocaleString(); }
+function renderTiers(){
+  var el = document.getElementById("tiers");
+  el.innerHTML = TIERS.map(function(t){
+    var price, per = "", note = "";
+    if (t.m === null) { price = "Custom"; note = "from $1,500/mo"; }
+    else if (t.m === 0) { price = "$0"; per = "/mo"; note = "free forever"; }
+    else {
+      var shown = annual ? Math.round(t.m * 10 / 12) : t.m;
+      price = money(shown); per = "/mo";
+      note = annual ? "billed " + money(t.m * 10) + "/yr — save " + money(t.m * 2) : "or " + money(t.m * 10) + "/yr";
+    }
+    return '<div class="tier' + (t.pop ? ' popular' : '') + '">' +
+      (t.pop ? '<span class="pop-badge">Most popular</span>' : '') +
+      '<span class="t-name">' + t.name + '</span><span class="t-for">' + t.tag + '</span>' +
+      '<div class="price">' + price + '<span class="per">' + per + '</span></div>' +
+      '<div class="annual-note">' + note + '</div>' +
+      '<ul class="feat">' + t.feats.map(function(f){return '<li>'+f+'</li>';}).join('') +
+        t.dim.map(function(f){return '<li class="dim">'+f+'</li>';}).join('') + '</ul>' +
+      '<a class="btn' + (t.pop ? ' primary' : '') + '" href="#">' + t.cta + '</a></div>';
+  }).join('');
+}
+function toggleBilling(){
+  annual = !annual;
+  document.getElementById("billSwitch").classList.toggle("on", annual);
+  renderTiers();
+}
+function calc(){
+  var n = +document.getElementById("calcN").value;
+  var plan = +document.getElementById("calcPlan").value;
+  var rate = +document.getElementById("calcRate").value;
+  var mo = n * plan * rate;
+  document.getElementById("calcNShow").textContent = n;
+  document.getElementById("calcOut").textContent = "$" + Math.round(mo).toLocaleString();
+  document.getElementById("calcYr").textContent = "$" + Math.round(mo * 12).toLocaleString();
+}
+/* ---- sign in / sign out (in-memory session) ---- */
+var nxUser = null;
+function authClick(){ if (nxUser) signOut(); else openSignin(); }
+function openSignin(){
+  document.getElementById("signinErr").textContent = "";
+  document.getElementById("signinModal").classList.add("open");
+  setTimeout(function(){ document.getElementById("signinEmail").focus(); }, 50);
+}
+function closeSignin(){ document.getElementById("signinModal").classList.remove("open"); }
+function doSignin(){
+  var email = document.getElementById("signinEmail").value.trim();
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
+    document.getElementById("signinErr").textContent = "Enter a valid email address.";
+    return;
+  }
+  nxUser = { email: email };
+  closeSignin(); renderAuth();
+}
+function signOut(){ nxUser = null; renderAuth(); }
+function renderAuth(){
+  var btn = document.getElementById("authBtn"), em = document.getElementById("authEmail");
+  if (nxUser) { btn.textContent = "Sign out"; btn.classList.add("in"); em.textContent = nxUser.email; em.title = nxUser.email; }
+  else { btn.textContent = "Sign in"; btn.classList.remove("in"); em.textContent = ""; }
+}
+renderTiers(); calc();
+</script>
+</body>
+</html>
