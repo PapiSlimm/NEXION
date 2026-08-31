@@ -7,6 +7,15 @@ import { assure } from "../domains/aegis.js";
 import { getRepoHealth } from "../adapters/github.js";
 import { getServiceSlo } from "../adapters/monitoring.js";
 import { runQuery } from "../adapters/database.js";
+import { convene } from "../domains/generals.js";
+import { publishThroughGenerals } from "../domains/promotions.js";
+import { runGovernanceSweep, getLatestSweep } from "../domains/governance.js";
+import { mission, config } from "../config.js";
+import { verifyAndLoad, enforce, constitution, digest } from "../constitution/engine.js";
+import { reviewForRelease } from "../constitution/inspectorate.js";
+
+// Article I §1.3 — fail-closed: the MCP surface also verifies the anchor at boot.
+verifyAndLoad();
 
 // MCP server. This is what lets OTHER agents/apps (Claude, IDEs, other MCP
 // clients) call the NEXION platform as first-class tools. It shares the exact
@@ -67,6 +76,79 @@ server.tool(
   "Run a read-only SELECT/WITH query against the connected database (Postgres/Supabase/Neon/PlanetScale).",
   { sql: z.string(), params: z.array(z.unknown()).optional() },
   async ({ sql, params }) => json(await runQuery(sql, params ?? [])),
+);
+
+const actionShape = {
+  kind: z.enum(["promotion", "content", "decision", "transaction"]),
+  title: z.string(),
+  content: z.string(),
+  destination: z.string().describe("V12 Multimedia, CEOS, SonicStream, or a registered channel"),
+  audienceIsFreeTier: z.boolean().optional(),
+  estimatedValueUsd: z.number().optional(),
+};
+
+server.tool(
+  "generals_review",
+  "Convene the Superior Generals Council (FIREWALL + NEXION + AEGIS + ORION) on an outbound action and return a RELEASE/HOLD/BLOCK verdict with each general's finding. Does NOT dispatch.",
+  actionShape,
+  async (args) => json(convene(args, mission)),
+);
+
+server.tool(
+  "promotions_publish",
+  "Council-gate an outbound promotion/content item and dispatch it to enabled V12 destinations ONLY if the council returns RELEASE. This is the only sanctioned outbound path.",
+  actionShape,
+  async (args) => json(await publishThroughGenerals(args, mission, config.ALLOW_PRIVATE_WEBHOOK)),
+);
+
+server.tool(
+  "governance_sweep",
+  "Run the daily governance sweep now: re-score every tracked system and re-affirm the AEGIS baseline. Returns the audit record.",
+  {},
+  async () => json(runGovernanceSweep()),
+);
+
+server.tool(
+  "governance_latest",
+  "Return the most recent daily governance sweep record.",
+  {},
+  async () => json(getLatestSweep()),
+);
+
+server.tool(
+  "constitution_status",
+  "Return the loaded V12 Constitution: instrument, version, SHA-256 digest, entrenched articles, release triggers, and Inspectorate configuration.",
+  {},
+  async () => {
+    const c = constitution();
+    return json({ instrument: c.instrument, version: c.version, digest: digest(), entrenchedArticles: c.entrenched_articles, releaseKinds: c.release_kinds, inspectorate: c.inspectorate });
+  },
+);
+
+server.tool(
+  "constitution_enforce",
+  "Deterministic Gate 1: evaluate an action against the code-enforceable articles (Schedule A, Art. II/III/IV/V) and return allow/deny with violations and sanctions.",
+  {
+    agent: z.string(),
+    kind: z.enum(["promotion", "content", "decision", "transaction", "spend", "ingest"]),
+    content: z.string(),
+    rationale: z.string().optional(),
+    destination: z.string().optional(),
+    tenantFilterPresent: z.boolean().optional(),
+    moneyComputedByModel: z.boolean().optional(),
+  },
+  async (args) => json(enforce(args)),
+);
+
+server.tool(
+  "inspectorate_review",
+  "Article XIII Gate 2: run the Superior Inspectorate General review and issue or refuse a Certificate of Release (silence/lapse = refusal; no self-certification).",
+  { agent: z.string(), kind: z.enum(["promotion", "content", "decision", "transaction", "spend", "ingest"]), content: z.string(), rationale: z.string().optional(), risk: z.enum(["routine", "critical", "catastrophic", "amendment", "entrenched"]).optional() },
+  async (args) => {
+    const gateOne = enforce(args);
+    const dossier = reviewForRelease({ processId: `PROC-mcp`, requestedByAgent: args.agent, summary: args.content.slice(0, 80), payload: args.content, risk: args.risk ?? "routine" }, gateOne);
+    return json({ gateOne, dossier });
+  },
 );
 
 async function main() {

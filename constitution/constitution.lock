@@ -1,0 +1,7 @@
+# V12 ECOSYSTEM CONSTITUTION — CRYPTOGRAPHIC ANCHOR
+# Instrument V12-CONST-001 · Article I §1.2
+#
+# Every service recomputes this digest at boot. A mismatch prevents
+# the service starting. There is no bypass. (Article I §1.3)
+# anchored_at: 2026-08-13T10:53:33Z
+sha256:7aac7266b55812ff203ca9a17b493f2c55bee4be490955da59a9fd6a201a571e
