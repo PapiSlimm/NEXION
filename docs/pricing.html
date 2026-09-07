@@ -146,7 +146,7 @@
     <div class="glow"></div>
     <span class="hero-badge"><span class="dot"></span> NEXION · V12 Enterprise Intelligence OS</span>
     <h1>Simple pricing.<br><span class="grad-text">Serious engineering intelligence.</span></h1>
-    <p class="sub">Production-readiness scoring, live GitHub &amp; observability signals, scored business cases, and audit-ready governance — one platform, five tiers. Every paid plan starts with a 14-day free trial. No credit card for Explorer.</p>
+    <p class="sub">Production-readiness scoring, live GitHub &amp; observability signals, scored business cases, audit-ready governance — and now the V12 TECA assistant, researched by DataVist, on every paid tier. One platform, five tiers. Every paid plan starts with a 14-day free trial. No credit card for Explorer.</p>
     <div class="toggle-row">
       <span>Monthly</span>
       <div class="switch" id="billSwitch" onclick="toggleBilling()"><div class="knob"></div></div>
@@ -156,7 +156,7 @@
   </div>
 
   <div class="tiers" id="tiers"></div>
-  <p class="fine">All prices USD. Annual billed upfront. 14-day free trial on all paid tiers.</p>
+  <p class="fine">v2 pricing — upgraded for the V12 intelligence release (TECA assistant, DataVist research, Oversight &amp; Reporting, app embeds). Suggested; pending founder approval. All prices USD. Annual billed upfront. 14-day free trial on all paid tiers.</p>
 
   <div class="section-head">
     <span class="kicker">Compare</span>
@@ -173,7 +173,12 @@
         <tr><td>Datadog SLO &amp; incident signals</td><td class="no">—</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
         <tr><td>FORGE VECTOR scored business cases</td><td class="no">—</td><td class="yes">3 / mo</td><td class="yes">Unlimited</td><td class="yes">Unlimited</td><td class="yes">Unlimited</td></tr>
         <tr><td>AEGIS assurance verdicts &amp; audit exports</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td></tr>
-        <tr><td>API calls / month</td><td>1,000</td><td>25,000</td><td>150,000</td><td>750,000</td><td>Custom</td></tr>
+        <tr><td>API calls / month</td><td>1,000</td><td>50,000</td><td>250,000</td><td>1,000,000</td><td>Custom</td></tr>
+        <tr><td>V12 TECA assistant (questions / mo)</td><td>10</td><td>200</td><td>2,000</td><td>10,000</td><td>Custom</td></tr>
+        <tr><td>TECA voice answers</td><td class="no">&#8212;</td><td class="yes">&#10003;</td><td class="yes">&#10003;</td><td class="yes">&#10003;</td><td class="yes">&#10003;</td></tr>
+        <tr><td>Oversight &amp; Reporting (agent ledger + TECA inbox)</td><td class="no">&#8212;</td><td class="no">&#8212;</td><td class="yes">&#10003;</td><td class="yes">&#10003;</td><td class="yes">&#10003;</td></tr>
+        <tr><td>Embed DataVist / TECA on your own apps</td><td class="no">&#8212;</td><td class="no">&#8212;</td><td class="no">&#8212;</td><td>3 origins</td><td>Unlimited + white-label</td></tr>
+        <tr><td>Governed AI executions with human approvals</td><td class="no">&#8212;</td><td class="no">&#8212;</td><td class="no">&#8212;</td><td class="yes">&#10003;</td><td class="yes">&#10003;</td></tr>
         <tr><td>MCP server access (AI-agent integration)</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td><td class="yes">✓</td></tr>
         <tr><td>SSO / SAML</td><td class="no">—</td><td class="no">—</td><td class="no">—</td><td class="yes">✓</td><td class="yes">✓</td></tr>
         <tr><td>Support</td><td>Community</td><td>Email</td><td>Priority email</td><td>Priority + onboarding</td><td>Dedicated CSM, 24/7</td></tr>
@@ -254,9 +259,9 @@
       <div style="margin-top:18px;display:flex;gap:12px;align-items:center;flex-wrap:wrap">
         <label style="font-size:13px;color:var(--ink-2)">Average plan</label>
         <select id="calcPlan" onchange="calc()">
-          <option value="29">Builder — $29/mo</option>
-          <option value="99" selected>Team — $99/mo</option>
-          <option value="299">Business — $299/mo</option>
+          <option value="39">Builder — $39/mo</option>
+          <option value="129" selected>Team — $129/mo</option>
+          <option value="349">Business — $349/mo</option>
         </select>
         <label style="font-size:13px;color:var(--ink-2)">Partner level</label>
         <select id="calcRate" onchange="calc()">
@@ -306,15 +311,15 @@
 "use strict";
 var TIERS = [
   { name:"Explorer", tag:"Solo devs kicking the tires", m:0, feats:[
-    "1 seat · 1 public repo","Readiness scoring engine","Sample live-signal data","Community support"], dim:["No live GitHub signals"], cta:"Start free", pop:false },
-  { name:"Builder", tag:"Indie builders & early startups", m:29, feats:[
-    "3 seats · 5 repos","Live GitHub signals (PRs, CI, releases)","MCP server access","3 FORGE VECTOR business cases / mo","Email support"], dim:[], cta:"Start 14-day trial", pop:false },
-  { name:"Team", tag:"Engineering teams shipping weekly", m:99, feats:[
-    "10 seats · 25 repos","Everything in Builder","Datadog SLO & incident signals","Unlimited FORGE VECTOR business cases","99.5% SLA · priority support"], dim:[], cta:"Start 14-day trial", pop:true },
-  { name:"Business", tag:"Multi-team orgs with compliance needs", m:299, feats:[
-    "25 seats · 100 repos","Everything in Team","AEGIS audit-ready exports","SSO / SAML","99.9% SLA + onboarding"], dim:[], cta:"Start 14-day trial", pop:false },
+    "1 seat \u00b7 1 public repo","Readiness scoring engine","Ask V12 TECA \u2014 10 questions / mo","Sample live-signal data","Community support"], dim:["No live GitHub signals"], cta:"Start free", pop:false },
+  { name:"Builder", tag:"Indie builders & early startups", m:39, feats:[
+    "3 seats \u00b7 5 repos","Live GitHub signals (PRs, CI, releases)","V12 TECA assistant \u00b7 200 questions / mo, voice included","MCP server access for AI agents","3 FORGE VECTOR business cases / mo","Email support"], dim:[], cta:"Start 14-day trial", pop:false },
+  { name:"Team", tag:"Engineering teams shipping weekly", m:129, feats:[
+    "10 seats \u00b7 25 repos","Everything in Builder","Datadog SLO & incident signals","Oversight & Reporting \u2014 agent ledger + TECA report inbox","Unlimited FORGE VECTOR business cases","V12 TECA \u00b7 2,000 questions / mo","99.5% SLA \u00b7 priority support"], dim:[], cta:"Start 14-day trial", pop:true },
+  { name:"Business", tag:"Multi-team orgs with compliance needs", m:349, feats:[
+    "25 seats \u00b7 100 repos","Everything in Team","Embed DataVist / TECA on your own apps \u00b7 3 origins","Governed AI executions with human approvals","AEGIS audit-ready exports","SSO / SAML","V12 TECA \u00b7 10,000 questions / mo","99.9% SLA + onboarding"], dim:[], cta:"Start 14-day trial", pop:false },
   { name:"Enterprise", tag:"Corporations & regulated industries", m:null, feats:[
-    "Unlimited seats & repos","Everything in Business","VPC or on-prem deployment","Custom integrations & data residency","Dedicated CSM · 24/7 · 99.95% SLA"], dim:[], cta:"Contact sales", pop:false }
+    "Unlimited seats, repos & embed origins","Everything in Business","White-label TECA voice on your products","Constitution-governed budgets & councils","VPC or on-prem deployment","Custom integrations & data residency","Dedicated CSM \u00b7 24/7 \u00b7 99.95% SLA"], dim:[], cta:"Contact sales", pop:false }
 ];
 var annual = false;
 function money(n){ return "$" + n.toLocaleString(); }
@@ -322,7 +327,7 @@ function renderTiers(){
   var el = document.getElementById("tiers");
   el.innerHTML = TIERS.map(function(t){
     var price, per = "", note = "";
-    if (t.m === null) { price = "Custom"; note = "from $1,500/mo"; }
+    if (t.m === null) { price = "Custom"; note = "from $2,000/mo"; }
     else if (t.m === 0) { price = "$0"; per = "/mo"; note = "free forever"; }
     else {
       var shown = annual ? Math.round(t.m * 10 / 12) : t.m;
@@ -379,5 +384,8 @@ function renderAuth(){
 }
 renderTiers(); calc();
 </script>
+
+<!-- DataVist / V12 TECA — official V12 representative (mounts after the top nav) -->
+<script src="https://datavist.onrender.com/embed.js" data-app="nexion" data-mount=".topnav" data-voice="teca" async></script>
 </body>
 </html>
