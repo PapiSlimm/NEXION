@@ -1,0 +1,12 @@
+import { readFileSync } from 'node:fs';
+import assert from 'node:assert/strict';
+const promotions = readFileSync('src/domains/promotions.ts', 'utf8');
+const config = readFileSync('src/config.ts', 'utf8');
+const mcp = readFileSync('src/mcp/server.ts', 'utf8');
+assert.match(promotions, /Webhook URL exceeds 500 characters/);
+assert.doesNotMatch(promotions, /webhookUrl\.slice\(0, 500\)/);
+assert.match(promotions, /config\.NODE_ENV === "production"/);
+assert.match(promotions, /redirect: "error"/);
+assert.match(config, /API_KEY \(at least 32 characters\) is required in production/);
+for (const scope of ['database:read','governance:write','inspectorate:review','promotions:publish']) assert.ok(mcp.includes(`requirePrivilegedTool("${scope}")`), `Missing scope ${scope}`);
+console.log('PASS: static release-safety invariants (not runtime certification)');

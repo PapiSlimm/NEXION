@@ -1,0 +1,36 @@
+name: NEXION CI
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: nexion_test
+          POSTGRES_PASSWORD: nexion_test_password
+          POSTGRES_DB: nexion_test
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U nexion_test -d nexion_test"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      GOVERNANCE_MIGRATION_DATABASE_URL: postgresql://nexion_test:nexion_test_password@localhost:5432/nexion_test
+      GOVERNANCE_TEST_DATABASE_URL: postgresql://nexion_test:nexion_test_password@localhost:5432/nexion_test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npm run check:release-safety
+      - run: node scripts/check-mcp-scopes.mjs
+      - run: npm run db:migrate
+      - run: npm run db:migrate # prove migration idempotency
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build

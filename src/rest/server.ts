@@ -1,3 +1,4 @@
+import { validateWebhookUrl } from "../lib/webhook-policy.js";
 import Fastify, { type FastifyInstance } from "fastify";
 import cors from "@fastify/cors";
 import { z } from "zod";
@@ -65,14 +66,40 @@ const actionBody = z.object({
 const destinationBody = z.object({
   name: z.string().min(1).max(80),
   type: z.enum(["simulated", "webhook"]).optional(),
-  webhookUrl: z.string().url().optional(),
+  webhookUrl: z.string().url().max(500).optional(),
 });
 
 export async function buildServer(): Promise<FastifyInstance> {
-  const app = Fastify({ logger: { level: config.LOG_LEVEL } });
-  await app.register(cors, { origin: true });
+  const app = Fastify({ logger: { level: config.LOG_LEVEL }, bodyLimit: 64 * 1024, requestTimeout: 15_000 });
+  await app.register(cors, { origin: false });
+  app.addHook("onSend", async (_req, reply, payload) => {
+    reply.header("X-Content-Type-Options", "nosniff");
+    reply.header("Referrer-Policy", "no-referrer");
+    reply.header("Cache-Control", "no-store");
+    return payload;
+  });
+  // Public health endpoint; every API operation requires the operator key.
+  app.addHook("onRequest", async (req, reply) => {
+    if (!req.url.startsWith("/api/")) return;
+    if (!config.API_KEY) {
+      if (config.NODE_ENV === "production") return reply.code(503).send({ error: "API authentication unavailable" });
+      return;
+    }
+    const supplied = req.headers.authorization;
+    const expected = `Bearer ${config.API_KEY}`;
+    const { timingSafeEqual } = await import("node:crypto");
+    const a = Buffer.from(supplied ?? "");
+    const b = Buffer.from(expected);
+    if (a.length !== b.length || !timingSafeEqual(a, b)) {
+      return reply.code(401).send({ error: "Unauthorized" });
+    }
+  });
 
   seedDefaultDestinations();
+
+  const webhookPermitted = (url: string): boolean => {
+    try { validateWebhookUrl(url); return true; } catch { return false; }
+  };
 
   app.get("/health", async () => ({ ok: true, service: "nexion-platform", ts: new Date().toISOString() }));
   app.get("/api/status", async () => ({ integrations, mission }));
@@ -158,18 +185,21 @@ export async function buildServer(): Promise<FastifyInstance> {
   app.post("/api/promotions/destinations", { preHandler: rateLimit(30, 60_000) }, async (req, reply) => {
     const parsed = destinationBody.safeParse(req.body);
     if (!parsed.success) return reply.code(400).send({ error: parsed.error.flatten() });
-    if (parsed.data.type === "webhook" && parsed.data.webhookUrl && !config.ALLOW_PRIVATE_WEBHOOK) {
-      const u = new URL(parsed.data.webhookUrl);
-      if (/^(localhost|127\.|10\.|192\.168\.|::1)/.test(u.hostname)) {
-        return reply.code(400).send({ error: "Webhook cannot target a private/internal host." });
-      }
+    if (parsed.data.type === "webhook" && !parsed.data.webhookUrl) {
+      return reply.code(400).send({ error: "Webhook destinations require webhookUrl" });
+    }
+    if (parsed.data.webhookUrl && !webhookPermitted(parsed.data.webhookUrl)) {
+      return reply.code(400).send({ error: "Webhook URL is not permitted" });
     }
     return { destination: addDestination(parsed.data) };
   });
 
   app.patch<{ Params: { id: string } }>("/api/promotions/destinations/:id", { preHandler: rateLimit(60, 60_000) }, async (req, reply) => {
-    const patch = z.object({ enabled: z.boolean().optional(), webhookUrl: z.string().url().nullable().optional() }).safeParse(req.body);
+    const patch = z.object({ enabled: z.boolean().optional(), webhookUrl: z.string().url().max(500).nullable().optional() }).safeParse(req.body);
     if (!patch.success) return reply.code(400).send({ error: patch.error.flatten() });
+    if (patch.data.webhookUrl && !webhookPermitted(patch.data.webhookUrl)) {
+      return reply.code(400).send({ error: "Webhook URL is not permitted" });
+    }
     const updated = updateDestination(req.params.id, {
       enabled: patch.data.enabled,
       webhookUrl: patch.data.webhookUrl ?? undefined,
@@ -183,8 +213,8 @@ export async function buildServer(): Promise<FastifyInstance> {
   });
 
   // ---- DAILY GOVERNANCE SWEEP ----
-  app.get("/api/governance/daily", async () => ({ latest: getLatestSweep(), history: getSweepHistory() }));
-  app.post("/api/governance/sweep", { preHandler: rateLimit(10, 60_000) }, async () => ({ record: runGovernanceSweep() }));
+  app.get("/api/governance/daily", async () => ({ latest: await getLatestSweep(), history: await getSweepHistory() }));
+  app.post("/api/governance/sweep", { preHandler: rateLimit(10, 60_000) }, async () => ({ record: await runGovernanceSweep() }));
 
   // ---- V12 CONSTITUTION (Instrument V12-CONST-001) ----
   app.get("/api/constitution/status", async () => {

@@ -12,6 +12,12 @@ services:
     envVars:
       - key: PORT
         value: "8080"
+      # Fail-closed since L99: production refuses to boot without a >=32-char API key.
+      # Render generates this secret; read it from the dashboard to call the API.
+      - key: NODE_ENV
+        value: production
+      - key: API_KEY
+        generateValue: true
       - key: GITHUB_TOKEN
         sync: false
       - key: GITHUB_API_URL

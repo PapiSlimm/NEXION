@@ -1,6 +1,7 @@
 import { buildServer } from "./rest/server.js";
 import { config, integrations } from "./config.js";
 import { closePool } from "./adapters/database.js";
+import { verifyGovernanceStore, closeGovernanceStore } from "./adapters/governance-store.js";
 import { startDailyGovernance } from "./domains/governance.js";
 import { verifyAndLoad } from "./constitution/engine.js";
 
@@ -12,6 +13,7 @@ async function main() {
   const anchor = verifyAndLoad();
   console.error(`[constitution] V12-CONST-001 v${anchor.version} verified · digest ${anchor.digest.slice(0, 16)}…`);
 
+  await verifyGovernanceStore();
   const app = await buildServer();
   await app.listen({ port: config.PORT, host: config.HOST });
   app.log.info({ integrations }, "NEXION platform REST API ready");
@@ -22,7 +24,7 @@ async function main() {
   if (config.GOVERNANCE_ENABLE_SWEEP) {
     stopGovernance = startDailyGovernance(config.GOVERNANCE_SWEEP_HOUR, (record) => {
       app.log.info({ record }, "Daily governance sweep completed");
-    });
+    }, (error) => app.log.error({ error }, "Daily governance sweep failed"));
     app.log.info({ hour: config.GOVERNANCE_SWEEP_HOUR }, "Daily governance sweep scheduled");
   }
 
@@ -30,6 +32,7 @@ async function main() {
     stopGovernance?.();
     await app.close();
     await closePool();
+    await closeGovernanceStore();
     process.exit(0);
   };
   process.on("SIGINT", shutdown);

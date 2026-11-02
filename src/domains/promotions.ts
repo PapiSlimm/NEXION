@@ -1,8 +1,11 @@
+import { validateWebhookUrl } from "../lib/webhook-policy.js";
 // Promotions & outbound release pipeline. Every promotion/content item is run
 // through the Superior Generals Council; only RELEASE verdicts are dispatched to
 // enabled destinations. Destinations are either simulated (V12 ecosystem
 // platforms with no public API yet — logged, ready to wire) or real webhooks.
 
+import { randomUUID } from "node:crypto";
+import { config } from "../config.js";
 import { convene, type CouncilVerdict, type OutboundAction } from "./generals.js";
 import type { Mission } from "../config.js";
 import { enforce, type EnforceResult } from "../constitution/engine.js";
@@ -39,7 +42,7 @@ const destinations = new Map<string, Destination>();
 const publishLog: PublishOutcome[] = [];
 
 function rid(): string {
-  return Math.random().toString(36).slice(2, 10);
+  return randomUUID();
 }
 
 // Seed the three V12 ecosystem platforms as ready-to-wire simulated adapters.
@@ -58,12 +61,15 @@ export function listDestinations(): Destination[] {
 export function addDestination(input: { name: string; type?: DestinationType; webhookUrl?: string }): Destination {
   const id = `dest_${rid()}`;
   const type: DestinationType = input.type === "webhook" ? "webhook" : "simulated";
+  if (type === "webhook" && !input.webhookUrl) throw new Error("Webhook URL required");
+  if (input.webhookUrl && input.webhookUrl.length > 500) throw new Error("Webhook URL exceeds 500 characters");
+  if (input.webhookUrl) validateWebhookUrl(input.webhookUrl);
   const dest: Destination = {
     id,
     name: input.name.slice(0, 80),
     type,
     enabled: false,
-    webhookUrl: type === "webhook" && input.webhookUrl ? input.webhookUrl.slice(0, 500) : undefined,
+    webhookUrl: type === "webhook" && input.webhookUrl ? input.webhookUrl : undefined,
     createdAt: new Date().toISOString(),
   };
   destinations.set(id, dest);
@@ -75,7 +81,9 @@ export function updateDestination(id: string, patch: { enabled?: boolean; webhoo
   if (!dest) return null;
   if (typeof patch.enabled === "boolean") dest.enabled = patch.enabled;
   if (patch.webhookUrl !== undefined) {
-    dest.webhookUrl = patch.webhookUrl ? patch.webhookUrl.slice(0, 500) : undefined;
+    if (patch.webhookUrl && patch.webhookUrl.length > 500) throw new Error("Webhook URL exceeds 500 characters");
+    if (patch.webhookUrl) validateWebhookUrl(patch.webhookUrl);
+    dest.webhookUrl = patch.webhookUrl ? patch.webhookUrl : undefined;
     if (dest.webhookUrl) dest.type = "webhook";
   }
   return dest;
@@ -89,21 +97,14 @@ export function getPublishLog(limit = 50): PublishOutcome[] {
   return publishLog.slice(0, limit);
 }
 
-function isPrivateHost(hostname: string): boolean {
-  const h = hostname.toLowerCase();
-  if (h === "localhost" || h.endsWith(".local") || h === "::1") return true;
-  if (/^127\./.test(h) || /^10\./.test(h) || /^192\.168\./.test(h) || /^169\.254\./.test(h)) return true;
-  if (/^172\.(1[6-9]|2\d|3[01])\./.test(h)) return true;
-  return false;
-}
-
 async function dispatch(dest: Destination, action: OutboundAction, allowPrivate: boolean): Promise<DispatchResult> {
   if (dest.type === "webhook" && dest.webhookUrl) {
     try {
-      const u = new URL(dest.webhookUrl);
-      if (!/^https?:$/.test(u.protocol)) throw new Error("non-http(s) URL");
-      if (!allowPrivate && isPrivateHost(u.hostname)) {
-        return { destination: dest.name, status: "SKIPPED", detail: "Refused: webhook targets a private/internal host.", simulated: false };
+      validateWebhookUrl(dest.webhookUrl);
+      // Native fetch resolves DNS outside application control. Until egress is
+      // pinned and filtered by infrastructure, refuse production delivery.
+      if (config.NODE_ENV === "production") {
+        return { destination: dest.name, status: "FAILED", detail: "Production webhook delivery disabled until network-level egress filtering is configured", simulated: false };
       }
       const controller = new AbortController();
       const timer = setTimeout(() => controller.abort(), 10_000);
@@ -112,6 +113,7 @@ async function dispatch(dest: Destination, action: OutboundAction, allowPrivate:
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ source: "NEXION_GENERALS", destination: dest.name, action, dispatchedAt: new Date().toISOString() }),
         signal: controller.signal,
+        redirect: "error",
       }).finally(() => clearTimeout(timer));
       return {
         destination: dest.name,

@@ -14,7 +14,9 @@
     "api": "tsx src/index.ts",
     "mcp": "tsx src/mcp/server.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "db:migrate": "node scripts/migrate-governance.mjs",
+    "check:release-safety": "node scripts/check-release-safety.mjs"
   },
   "dependencies": {
     "@fastify/cors": "^10.0.1",

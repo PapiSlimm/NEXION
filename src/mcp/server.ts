@@ -24,6 +24,17 @@ const server = new McpServer({ name: "nexion-platform", version: "0.1.0" });
 
 const json = (data: unknown) => ({ content: [{ type: "text" as const, text: JSON.stringify(data, null, 2) }] });
 
+// Stdio transport is not an authenticated network boundary. Privileged tools
+// must be explicitly enabled by the process operator, never by a tool caller.
+function requirePrivilegedTool(scope: string): void {
+  if (config.MCP_ENABLE_PRIVILEGED_TOOLS !== "true") {
+    throw new Error("Privileged MCP tools disabled; set MCP_ENABLE_PRIVILEGED_TOOLS=true only in a trusted local process");
+  }
+  const scopes = new Set(config.MCP_ALLOWED_SCOPES.split(",").map(s => s.trim()).filter(Boolean));
+  if (!scopes.has(scope)) throw new Error(`MCP scope denied: ${scope}`);
+}
+
+
 server.tool(
   "nexion_assess_readiness",
   "Score a system's production readiness (0–10) against the NEXION rubric. Optionally credit checks from live GitHub CI (repo) and Datadog SLOs (service).",
@@ -75,7 +86,7 @@ server.tool(
   "data_query",
   "Run a read-only SELECT/WITH query against the connected database (Postgres/Supabase/Neon/PlanetScale).",
   { sql: z.string(), params: z.array(z.unknown()).optional() },
-  async ({ sql, params }) => json(await runQuery(sql, params ?? [])),
+  async ({ sql, params }) => { requirePrivilegedTool("database:read"); return json(await runQuery(sql, params ?? [])); },
 );
 
 const actionShape = {
@@ -98,21 +109,21 @@ server.tool(
   "promotions_publish",
   "Council-gate an outbound promotion/content item and dispatch it to enabled V12 destinations ONLY if the council returns RELEASE. This is the only sanctioned outbound path.",
   actionShape,
-  async (args) => json(await publishThroughGenerals(args, mission, config.ALLOW_PRIVATE_WEBHOOK)),
+  async (args) => { requirePrivilegedTool("promotions:publish"); return json(await publishThroughGenerals(args, mission, config.ALLOW_PRIVATE_WEBHOOK)); },
 );
 
 server.tool(
   "governance_sweep",
   "Run the daily governance sweep now: re-score every tracked system and re-affirm the AEGIS baseline. Returns the audit record.",
   {},
-  async () => json(runGovernanceSweep()),
+  async () => { requirePrivilegedTool("governance:write"); return json(await runGovernanceSweep()); },
 );
 
 server.tool(
   "governance_latest",
   "Return the most recent daily governance sweep record.",
   {},
-  async () => json(getLatestSweep()),
+  async () => json(await getLatestSweep()),
 );
 
 server.tool(
@@ -145,6 +156,7 @@ server.tool(
   "Article XIII Gate 2: run the Superior Inspectorate General review and issue or refuse a Certificate of Release (silence/lapse = refusal; no self-certification).",
   { agent: z.string(), kind: z.enum(["promotion", "content", "decision", "transaction", "spend", "ingest"]), content: z.string(), rationale: z.string().optional(), risk: z.enum(["routine", "critical", "catastrophic", "amendment", "entrenched"]).optional() },
   async (args) => {
+    requirePrivilegedTool("inspectorate:review");
     const gateOne = enforce(args);
     const dossier = reviewForRelease({ processId: `PROC-mcp`, requestedByAgent: args.agent, summary: args.content.slice(0, 80), payload: args.content, risk: args.risk ?? "routine" }, gateOne);
     return json({ gateOne, dossier });
